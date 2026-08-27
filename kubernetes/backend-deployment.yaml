@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripchain-backend
+  labels:
+    app: tripchain-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tripchain-backend
+  template:
+    metadata:
+      labels:
+        app: tripchain-backend
+    spec:
+      containers:
+      - name: tripchain-backend
+        image: tripchain-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - secretRef:
+            name: tripchain-secrets

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripchain-frontend
+  labels:
+    app: tripchain-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tripchain-frontend
+  template:
+    metadata:
+      labels:
+        app: tripchain-frontend
+    spec:
+      containers:
+      - name: tripchain-frontend
+        image: tripchain-frontend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
