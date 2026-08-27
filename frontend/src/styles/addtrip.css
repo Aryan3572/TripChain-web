@@ -1,0 +1,114 @@
+/* ADD TRIP — PAGE WRAPPER */
+.addtrip-wrapper {
+  width: 100%;
+  padding: 100px 20px 40px;
+  display: flex;
+  justify-content: center;
+}
+
+/* GLASS FORM CARD */
+.addtrip-card {
+  width: 100%;
+  max-width: 600px;
+  padding: 35px 30px;
+  border-radius: 22px;
+  background: #FFFFFF;
+  border: var(--cartoon-border);
+  box-shadow: var(--cartoon-shadow);
+  animation: fadeSlide 0.45s ease-out;
+}
+
+/* TITLE */
+.addtrip-title {
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.addtrip-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 26px;
+}
+
+/* FORM GRID */
+.addtrip-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.addtrip-form-grid label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.addtrip-form-grid input,
+.addtrip-form-grid select {
+  margin-top: 6px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: var(--cartoon-border);
+  background: #FFFFFF;
+  color: var(--text-main);
+  font-size: 15px;
+  box-shadow: inset 0px 3px 0px rgba(0,0,0,0.05);
+}
+
+.addtrip-form-grid input:focus,
+.addtrip-form-grid select:focus {
+  border-color: var(--secondary);
+  box-shadow: inset 0px 3px 0px rgba(0,0,0,0.05), 0 0 0 4px rgba(58, 134, 255, 0.2);
+  outline: none;
+}
+
+/* SAVE BUTTON */
+.addtrip-btn {
+  width: 100%;
+  margin-top: 25px;
+  padding: 14px;
+  border-radius: 14px;
+  border: var(--cartoon-border);
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  background: var(--primary);
+  color: var(--text-main);
+  box-shadow: var(--cartoon-shadow);
+  transition: 0.2s ease;
+}
+
+.addtrip-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cartoon-shadow-hover);
+  background: #FFD000;
+}
+
+/* ERROR TEXT */
+.addtrip-error {
+  margin-top: 10px;
+  color: #ff7a7a;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* MOBILE FIX */
+@media (max-width: 600px) {
+  .addtrip-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .addtrip-card {
+    padding: 30px 22px;
+  }
+}
+
+/* ANIMATION */
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

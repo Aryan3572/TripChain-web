@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --primary: #FFBE0B;
+  --secondary: #3A86FF;
+  --accent: #FF006E;
+  --bg-dark: #FDFCDC;
+  --bg-gradient: radial-gradient(circle at top, #FEFAE0 0%, #FDFCDC 60%);
+  --text-main: #14213D;
+  --text-muted: #4A4E69;
+  --glass-bg: #FFFFFF;
+  --glass-border: #14213D;
+  --cartoon-border: 3px solid #14213D;
+  --cartoon-shadow: 4px 4px 0px #14213D;
+  --cartoon-shadow-hover: 6px 6px 0px #14213D;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+input, button, textarea, select {
+  font-family: inherit;
+}
+
+input:not([type="password"]), textarea {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg-gradient);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Base Cartoonish Card */
+.glass-card {
+  background: var(--glass-bg);
+  border: var(--cartoon-border);
+  border-radius: 16px;
+  box-shadow: var(--cartoon-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cartoon-shadow-hover);
+}
+
+.btn {
+  font-family: 'Outfit', sans-serif;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: var(--cartoon-border);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--cartoon-shadow);
+  color: var(--text-main);
+}
+
+.btn-primary {
+  background: var(--primary);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--cartoon-shadow-hover);
+  background: #FFD000;
+}
+
+.btn-secondary {
+  background: #FFFFFF;
+}
+
+.btn-secondary:hover {
+  background: #F1F1F1;
+  transform: translateY(-2px);
+  box-shadow: var(--cartoon-shadow-hover);
+}
+
+/* Original Forms and Planners Styles preserved but enhanced */
+.page-title {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  color: var(--text-main);
+  text-shadow: 2px 2px 0px #fff, 4px 4px 0px rgba(20,33,61,0.2);
+}
+.page-subtitle {
+  color: var(--text-muted);
+  margin-bottom: 30px;
+}
+.planner-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+  gap: 30px;
+  align-items: flex-start;
+}
+.planner-form h2 {
+  margin-bottom: 20px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+.field span {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.field input, .field select {
+  background: #FFFFFF;
+  color: var(--text-main);
+  border-radius: 12px;
+  border: var(--cartoon-border);
+  padding: 14px 16px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  box-shadow: inset 0px 3px 0px rgba(0,0,0,0.05);
+}
+.field input:focus, .field select:focus {
+  border-color: var(--secondary);
+  box-shadow: inset 0px 3px 0px rgba(0,0,0,0.05), 0 0 0 4px rgba(58, 134, 255, 0.2);
+}
+.field small {
+  color: #64748b;
+}
+.error-box {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+.route-summary {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--glass-border);
+}
+.route-summary h3 { margin-bottom: 10px; }
+.time-saved { color: #10b981; margin: 8px 0 16px; font-weight: 500; }
+@media (max-width: 900px) {
+  .planner-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+input[type='date']::-webkit-calendar-picker-indicator, input[type='time']::-webkit-calendar-picker-indicator { display: none; -webkit-appearance: none; }

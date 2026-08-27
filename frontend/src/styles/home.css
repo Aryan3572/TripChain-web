@@ -1,0 +1,46 @@
+.home-wrapper {
+  padding-top: 90px;
+  text-align: center;
+}
+
+.home-title {
+  font-size: 32px;
+  font-weight: 700;
+}
+.home-title span {
+  color: var(--primary);
+  text-shadow: 2px 2px 0px #14213D;
+}
+
+.home-subtitle {
+  margin-top: 6px;
+  color: var(--text-muted);
+}
+
+.home-grid {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+  padding: 0 20px;
+}
+
+.home-card {
+  background: #FFFFFF;
+  border: var(--cartoon-border);
+  border-radius: 18px;
+  padding: 22px;
+  cursor: pointer;
+  box-shadow: var(--cartoon-shadow);
+  transition: 0.2s;
+}
+
+.home-card:hover {
+  transform: translateY(-4px);
+  background: #F1F1F1;
+  box-shadow: var(--cartoon-shadow-hover);
+}
+
+.home-emoji {
+  font-size: 32px;
+}

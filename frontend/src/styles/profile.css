@@ -1,0 +1,58 @@
+.profile-container {
+  padding: 30px;
+  color: var(--text-main);
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.profile-card,
+.eco-card,
+.badges-card,
+.coupons-card,
+.achievements-card,
+.patterns-card,
+.modes-card {
+  background: #FFFFFF;
+  padding: 20px;
+  border-radius: 15px;
+  border: var(--cartoon-border);
+  box-shadow: var(--cartoon-shadow);
+  transition: 0.2s;
+}
+
+.profile-card:hover,
+.eco-card:hover,
+.badges-card:hover,
+.coupons-card:hover,
+.achievements-card:hover,
+.patterns-card:hover,
+.modes-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--cartoon-shadow-hover);
+}
+
+.eco-score-number {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--primary);
+  text-shadow: 2px 2px 0px #14213D;
+}
+
+.coupon {
+  background: #FFFFFF;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 10px;
+  border: var(--cartoon-border);
+  box-shadow: 2px 2px 0px #14213D;
+}
+
+.coupon h4 {
+  margin: 0 0 5px 0;
+  color: var(--primary);
+  text-shadow: 1px 1px 0px #14213D;
+}

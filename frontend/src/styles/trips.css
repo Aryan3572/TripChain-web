@@ -1,0 +1,23 @@
+.trips-container {
+  padding: 30px;
+}
+
+.trip-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.trip-card {
+  background: #FFFFFF;
+  padding: 20px;
+  border-radius: 16px;
+  border: var(--cartoon-border);
+  box-shadow: var(--cartoon-shadow);
+  transition: transform 0.2s;
+}
+
+.trip-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--cartoon-shadow-hover);
+}

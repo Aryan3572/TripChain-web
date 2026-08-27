@@ -1,0 +1,15 @@
+:root {
+  --primary: #FFBE0B;
+  --secondary: #3A86FF;
+  --glass-bg: #FFFFFF;
+  --glass-border: #14213D;
+  --card-bg: #FFFFFF;
+  --shadow: 4px 4px 0px #14213D;
+}
+
+body {
+  margin: 0;
+  background: #FDFCDC;
+  font-family: "Poppins", sans-serif;
+  color: #14213D;
+}
