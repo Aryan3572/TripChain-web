@@ -58,93 +58,94 @@ const Signup = () => {
   return (
     <motion.div
       className="auth-panel"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        style={{ display: "flex", gap: "40px", maxWidth: "1000px", margin: "80px auto", padding: "20px" }}
-      >
-        <div className="auth-info" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", position: "relative" }}>
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", bounce: 0.5, delay: 0.3 }}
-            style={{ width: "100%", maxWidth: "400px", marginBottom: "30px" }}
-          >
-            <div style={{
-              background: "#FFFFFF",
-              border: "4px solid #14213D",
-              borderRadius: "24px",
-              padding: "24px",
-              boxShadow: "8px 8px 0px #14213D",
-              position: "relative",
-              zIndex: 2,
-            }}>
-              <h1 style={{ fontSize: "2rem", color: "#10B981", marginBottom: "12px", display: "flex", alignItems: "center", gap: "10px" }}>
-                <span style={{ fontSize: "2.5rem" }}>--</span> Let's explore!
-              </h1>
-              <p style={{ fontSize: "1.1rem", color: "var(--text-main)", lineHeight: "1.6", fontWeight: "600", margin: 0 }}>
-                Join the Tripchain community today! Together we can track your trips, lower our carbon footprint, and earn some awesome blockchain NFT badges!
-              </p>
-              {/* Speech bubble tail shadow */}
-              <div style={{
-                position: "absolute",
-                bottom: "-24px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                borderWidth: "24px 24px 0",
-                borderStyle: "solid",
-                borderColor: "#14213D transparent transparent transparent",
-                width: 0,
-                zIndex: 1
-              }}></div>
-              {/* Speech bubble tail inner */}
-              <div style={{
-                position: "absolute",
-                bottom: "-16px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                borderWidth: "18px 18px 0",
-                borderStyle: "solid",
-                borderColor: "#FFFFFF transparent transparent transparent",
-                width: 0,
-                zIndex: 3
-              }}></div>
-            </div>
-          </motion.div>
-
-          <motion.img
-            initial={{ y: 50, opacity: 0 }}
-            animate={{
-              y: 0,
-              opacity: 1,
-              scale: mascotState === "happy" ? [1, 1.1, 1] : mascotState === "focused" ? 1.05 : mascotState === "hidden" ? 0.9 : 1,
-              rotateZ: mascotState === "hidden" ? -10 : 0,
-              filter: mascotState === "hidden" ? "brightness(0.7) blur(3px)" : "brightness(1) blur(0px)",
-            }}
-            transition={{ type: "spring", bounce: 0.6, delay: 0.1 }}
-            src="/mascot.png"
-            alt="Tripchain Mascot"
-            style={{
-              width: "250px",
-              height: "250px",
-              objectFit: "cover",
-              borderRadius: "50%",
-              border: "4px solid #14213D",
-              boxShadow: "6px 6px 0px #14213D",
-              background: "#FDFCDC"
-            }}
-          />
-        </div>
-
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      style={{ maxWidth: "1000px" }}
+    >
+      <div className="auth-info">
         <motion.div
-          className="auth-card glass-card"
-          initial={{ scale: 0.9, opacity: 0 }}
+          initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          style={{ flex: 1, padding: "50px 40px", display: "flex", flexDirection: "column", justifyContent: "center", background: "#FFFFFF", borderRadius: "24px", border: "3px solid #14213D", boxShadow: "8px 8px 0px #14213D" }}
+          transition={{ type: "spring", bounce: 0.5, delay: 0.3 }}
+          style={{ width: "100%", maxWidth: "420px", marginBottom: "clamp(16px, 3vw, 24px)" }}
         >
-          <h1 className="auth-title" style={{ fontSize: "2.5rem", marginBottom: "10px", color: "#14213D" }}>Create your account</h1>
-          <p className="auth-subtitle" style={{ color: "var(--text-muted)", marginBottom: "30px", fontSize: "1.1rem" }}>Join Tripchain and start tracking your journeys.</p>
+          <div style={{
+            background: "#FFFFFF",
+            border: "4px solid #14213D",
+            borderRadius: "24px",
+            padding: "clamp(16px, 3vw, 24px)",
+            boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D",
+            position: "relative",
+            zIndex: 2,
+            boxSizing: "border-box",
+          }}>
+            <h1 style={{ fontSize: "clamp(1.5rem, 4vw, 2rem)", color: "#10B981", marginBottom: "8px", display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)" }}>--</span> Let's explore!
+            </h1>
+            <p style={{ fontSize: "clamp(0.95rem, 2vw, 1.1rem)", color: "var(--text-main)", lineHeight: "1.5", fontWeight: "600", margin: 0 }}>
+              Join the Tripchain community today! Together we can track your trips, lower our carbon footprint, and earn some awesome blockchain NFT badges!
+            </p>
+            {/* Speech bubble tail shadow */}
+            <div style={{
+              position: "absolute",
+              bottom: "-24px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              borderWidth: "24px 24px 0",
+              borderStyle: "solid",
+              borderColor: "#14213D transparent transparent transparent",
+              width: 0,
+              zIndex: 1
+            }}></div>
+            {/* Speech bubble tail inner */}
+            <div style={{
+              position: "absolute",
+              bottom: "-16px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              borderWidth: "18px 18px 0",
+              borderStyle: "solid",
+              borderColor: "#FFFFFF transparent transparent transparent",
+              width: 0,
+              zIndex: 3
+            }}></div>
+          </div>
+        </motion.div>
+
+        <motion.img
+          initial={{ y: 50, opacity: 0 }}
+          animate={{
+            y: 0,
+            opacity: 1,
+            scale: mascotState === "happy" ? [1, 1.1, 1] : mascotState === "focused" ? 1.05 : mascotState === "hidden" ? 0.9 : 1,
+            rotateZ: mascotState === "hidden" ? -10 : 0,
+            filter: mascotState === "hidden" ? "brightness(0.7) blur(3px)" : "brightness(1) blur(0px)",
+          }}
+          transition={{ type: "spring", bounce: 0.6, delay: 0.1 }}
+          src="/mascot.png"
+          alt="Tripchain Mascot"
+          style={{
+            width: "clamp(150px, 30vw, 240px)",
+            height: "clamp(150px, 30vw, 240px)",
+            objectFit: "cover",
+            borderRadius: "50%",
+            border: "4px solid #14213D",
+            boxShadow: "clamp(4px, 1vw, 6px) clamp(4px, 1vw, 6px) 0px #14213D",
+            background: "#FDFCDC"
+          }}
+        />
+      </div>
+
+      <motion.div
+        className="auth-card glass-card"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        style={{ flex: 1, padding: "clamp(24px, 4vw, 44px) clamp(16px, 4vw, 36px)", display: "flex", flexDirection: "column", justifyContent: "center", background: "#FFFFFF", borderRadius: "clamp(18px, 3vw, 24px)", border: "3px solid #14213D", boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D", width: "100%", boxSizing: "border-box" }}
+      >
+        <h1 className="auth-title" style={{ fontSize: "clamp(1.6rem, 4vw, 2.2rem)", marginBottom: "8px", color: "#14213D" }}>Create your account</h1>
+        <p className="auth-subtitle" style={{ color: "var(--text-muted)", marginBottom: "24px", fontSize: "clamp(0.95rem, 2vw, 1.05rem)" }}>Join Tripchain and start tracking your journeys.</p>
 
           <GoogleAuthButton
             label="Sign up with Google"

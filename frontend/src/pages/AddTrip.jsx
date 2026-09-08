@@ -187,37 +187,37 @@ const AddTrip = () => {
 
   return (
     <motion.div 
-      style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "40px 20px" }}
+      style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "clamp(20px, 4vw, 40px) clamp(10px, 3vw, 20px)", width: "100%", boxSizing: "border-box" }}
       initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0, transition: { type: "spring", bounce: 0.5 } }}
     >
-      <div style={{ maxWidth: "800px", width: "100%", padding: "40px", background: "#FFFFFF", borderRadius: "24px", border: "4px solid #14213D", boxShadow: "8px 8px 0px #14213D" }}>
-        <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", fontSize: "2.5rem", color: "#14213D", marginBottom: "8px" }}>
+      <div style={{ maxWidth: "800px", width: "100%", padding: "clamp(20px, 4vw, 40px)", background: "#FFFFFF", borderRadius: "clamp(18px, 3vw, 24px)", border: "4px solid #14213D", boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D", boxSizing: "border-box" }}>
+        <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", fontSize: "clamp(1.8rem, 5vw, 2.5rem)", color: "#14213D", marginBottom: "8px", textAlign: "center" }}>
           Add a New Trip
         </h1>
-        <p style={{ textAlign: "center", fontSize: "1.1rem", color: "var(--text-muted)", fontWeight: "600", marginBottom: "32px" }}>
+        <p style={{ textAlign: "center", fontSize: "clamp(0.95rem, 2.5vw, 1.1rem)", color: "var(--text-muted)", fontWeight: "600", marginBottom: "32px" }}>
           Record your journey, choose your route strategy, and earn sustainability rewards.
         </p>
 
-        <form onSubmit={handleAddTrip} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <form onSubmit={handleAddTrip} style={{ display: "flex", flexDirection: "column", gap: "24px", width: "100%" }}>
           
-          <div style={{ display: "flex", gap: "20px", flexDirection: window.innerWidth < 600 ? "column" : "row" }}>
-            <label style={{ flex: 1, display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))", gap: "16px" }}>
+            <label style={{ display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
               From
               <input 
                 type="text" required value={from} onChange={(e) => setFrom(e.target.value)} 
                 placeholder="e.g. Home"
-                style={{ width: "100%", padding: "16px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)" }}
+                style={{ width: "100%", padding: "16px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)", boxSizing: "border-box" }}
                 onFocus={(e) => { e.target.style.borderColor = "#3A86FF"; e.target.style.background = "#FFFFFF"; }}
                 onBlur={(e) => { e.target.style.borderColor = "#14213D"; e.target.style.background = "#F8FAFC"; }}
               />
             </label>
 
-            <label style={{ flex: 1, display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
+            <label style={{ display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
               To
               <input 
                 type="text" required value={to} onChange={(e) => setTo(e.target.value)} 
                 placeholder="e.g. Office"
-                style={{ width: "100%", padding: "16px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)" }}
+                style={{ width: "100%", padding: "16px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)", boxSizing: "border-box" }}
                 onFocus={(e) => { e.target.style.borderColor = "#3A86FF"; e.target.style.background = "#FFFFFF"; }}
                 onBlur={(e) => { e.target.style.borderColor = "#14213D"; e.target.style.background = "#F8FAFC"; }}
               />
@@ -225,13 +225,13 @@ const AddTrip = () => {
           </div>
 
           {/* ROUTE TYPE SELECTION (FASTEST VS ECO) */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <label style={{ fontWeight: "bold", color: "#14213D", fontSize: "15px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+            <label style={{ fontWeight: "bold", color: "#14213D", fontSize: "15px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "6px" }}>
               <span>Route Selection</span>
               <span style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: "600" }}>Choose route option to earn rewards</span>
             </label>
 
-            <div style={{ display: "grid", gridTemplateColumns: window.innerWidth < 600 ? "1fr" : "1fr 1fr", gap: "16px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))", gap: "16px" }}>
               {/* Eco Route */}
               <motion.div
                 whileHover={{ scale: 1.02, y: -2 }}
@@ -248,6 +248,7 @@ const AddTrip = () => {
                   display: "flex",
                   flexDirection: "column",
                   gap: "6px",
+                  boxSizing: "border-box",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -324,9 +325,9 @@ const AddTrip = () => {
             </div>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
             <label style={{ fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>Mode of Travel</label>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(90px, 1fr))", gap: "16px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 82px), 1fr))", gap: "10px" }}>
               {[
                 { id: "car", icon: Car, label: "Car", color: "#3A86FF" },
                 { id: "bus", icon: Bus, label: "Bus", color: "#8338EC" },
@@ -341,27 +342,28 @@ const AddTrip = () => {
                   type="button"
                   onClick={() => setMode(m.id)}
                   style={{
-                    display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
-                    padding: "16px", borderRadius: "16px", border: "3px solid #14213D",
+                    display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
+                    padding: "clamp(10px, 2vw, 16px)", borderRadius: "16px", border: "3px solid #14213D",
                     background: mode === m.id ? m.color : "#FFFFFF",
                     color: mode === m.id ? "#FFFFFF" : "#14213D",
                     boxShadow: mode === m.id ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D",
-                    transition: "all 0.2s", cursor: "pointer", fontWeight: "bold"
+                    transition: "all 0.2s", cursor: "pointer", fontWeight: "bold",
+                    boxSizing: "border-box",
                   }}
                 >
-                  <m.icon size={28} />
-                  <span style={{ fontSize: "14px" }}>{m.label}</span>
+                  <m.icon size={26} />
+                  <span style={{ fontSize: "clamp(12px, 2.5vw, 14px)" }}>{m.label}</span>
                 </motion.button>
               ))}
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: "20px", flexDirection: window.innerWidth < 600 ? "column" : "row" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))", gap: "16px", width: "100%" }}>
             <label style={{ flex: 1, display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
               Distance (km)
               <input 
                 type="number" required min="0" step="0.1" value={distance} onChange={(e) => setDistance(e.target.value)} 
-                style={{ width: "100%", padding: "16px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)" }}
+                style={{ width: "100%", padding: "16px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)", boxSizing: "border-box" }}
                 onFocus={(e) => { e.target.style.borderColor = "#3A86FF"; e.target.style.background = "#FFFFFF"; }}
                 onBlur={(e) => { e.target.style.borderColor = "#14213D"; e.target.style.background = "#F8FAFC"; }}
               />
@@ -371,7 +373,7 @@ const AddTrip = () => {
               Duration (min)
               <input 
                 type="number" required min="0" step="1" value={duration} onChange={(e) => setDuration(e.target.value)} 
-                style={{ width: "100%", padding: "16px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)" }}
+                style={{ width: "100%", padding: "16px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)", boxSizing: "border-box" }}
                 onFocus={(e) => { e.target.style.borderColor = "#3A86FF"; e.target.style.background = "#FFFFFF"; }}
                 onBlur={(e) => { e.target.style.borderColor = "#14213D"; e.target.style.background = "#F8FAFC"; }}
               />
@@ -461,24 +463,26 @@ const AddTrip = () => {
               className="glass-card"
               style={{
                 background: "#FDFCDC",
-                padding: "24px",
-                width: "90%",
-                maxWidth: "400px",
+                padding: "clamp(18px, 4vw, 24px)",
+                width: "min(92vw, 420px)",
+                maxHeight: "90vh",
+                overflowY: "auto",
                 display: "flex",
                 flexDirection: "column",
-                gap: "20px",
+                gap: "18px",
                 border: "3px solid #14213D",
-                borderRadius: "20px"
+                borderRadius: "20px",
+                boxSizing: "border-box",
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h3 style={{ margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                <h3 style={{ margin: 0, display: "flex", alignItems: "center", gap: "8px", fontSize: "clamp(1.1rem, 3vw, 1.3rem)" }}>
                   <Calendar size={20} /> Pick Date & Time
                 </h3>
                 <button 
                   type="button"
                   onClick={() => setShowDateModal(false)}
-                  style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", display: "flex", alignItems: "center", justifyContent: "center", minWidth: "40px", minHeight: "40px" }}
                 >
                   <X size={24} />
                 </button>
@@ -486,13 +490,13 @@ const AddTrip = () => {
 
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 <label style={{ fontWeight: "600" }}>Date</label>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#FFFFFF", border: "3px solid #14213D", padding: "10px", borderRadius: "12px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#FFFFFF", border: "3px solid #14213D", padding: "10px", borderRadius: "12px", flexWrap: "wrap" }}>
                   <Calendar size={18} color="var(--primary)" />
-                  <select value={day} onChange={e => setDay(e.target.value)} style={{ appearance: "none", border: "none", outline: "none", background: "transparent", fontSize: "16px", fontWeight: "bold", paddingRight: "10px", cursor: "pointer" }}>
+                  <select value={day} onChange={e => setDay(e.target.value)} style={{ appearance: "none", border: "none", outline: "none", background: "transparent", fontSize: "16px", fontWeight: "bold", paddingRight: "6px", cursor: "pointer" }}>
                     {Array.from({length: 31}, (_, i) => i + 1).map(d => <option key={d} value={d}>{d}</option>)}
                   </select>
                   <span style={{color: "#cbd5e1"}}>/</span>
-                  <select value={month} onChange={e => setMonth(e.target.value)} style={{ appearance: "none", border: "none", outline: "none", background: "transparent", fontSize: "16px", fontWeight: "bold", paddingRight: "10px", cursor: "pointer" }}>
+                  <select value={month} onChange={e => setMonth(e.target.value)} style={{ appearance: "none", border: "none", outline: "none", background: "transparent", fontSize: "16px", fontWeight: "bold", paddingRight: "6px", cursor: "pointer" }}>
                     {Array.from({length: 12}, (_, i) => i + 1).map(m => <option key={m} value={m}>{new Date(0, m - 1).toLocaleString('default', { month: 'short' })}</option>)}
                   </select>
                   <span style={{color: "#cbd5e1"}}>/</span>
@@ -504,9 +508,9 @@ const AddTrip = () => {
 
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 <label style={{ fontWeight: "600" }}>Time</label>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#FFFFFF", border: "3px solid #14213D", padding: "10px", borderRadius: "12px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "#FFFFFF", border: "3px solid #14213D", padding: "10px", borderRadius: "12px", flexWrap: "wrap" }}>
                   <Clock size={18} color="var(--primary)" />
-                  <select value={hour} onChange={e => setHour(e.target.value)} style={{ appearance: "none", border: "none", outline: "none", background: "transparent", fontSize: "16px", fontWeight: "bold", paddingRight: "10px", cursor: "pointer" }}>
+                  <select value={hour} onChange={e => setHour(e.target.value)} style={{ appearance: "none", border: "none", outline: "none", background: "transparent", fontSize: "16px", fontWeight: "bold", paddingRight: "6px", cursor: "pointer" }}>
                     {Array.from({length: 24}, (_, i) => i).map(h => <option key={h} value={h}>{h.toString().padStart(2, '0')}</option>)}
                   </select>
                   <span style={{fontWeight: "bold"}}>:</span>

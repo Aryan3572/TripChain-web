@@ -1,10 +1,12 @@
 .home-wrapper {
-  padding-top: 90px;
+  padding: clamp(16px, 4vw, 40px) clamp(8px, 2vw, 20px);
   text-align: center;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .home-title {
-  font-size: 32px;
+  font-size: clamp(24px, 5vw, 36px);
   font-weight: 700;
 }
 .home-title span {
@@ -15,14 +17,15 @@
 .home-subtitle {
   margin-top: 6px;
   color: var(--text-muted);
+  font-size: clamp(14px, 2.5vw, 16px);
 }
 
 .home-grid {
-  margin-top: 30px;
+  margin-top: clamp(20px, 4vw, 32px);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 20px;
-  padding: 0 20px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  gap: clamp(12px, 2.5vw, 20px);
+  padding: 0;
 }
 
 .home-card {

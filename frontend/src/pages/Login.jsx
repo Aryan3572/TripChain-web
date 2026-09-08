@@ -60,28 +60,29 @@ const Login = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      style={{ display: "flex", gap: "40px", maxWidth: "1000px", margin: "80px auto", padding: "20px" }}
+      style={{ maxWidth: "1000px" }}
     >
-      <div className="auth-info" style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", position: "relative" }}>
+      <div className="auth-info">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", bounce: 0.5, delay: 0.3 }}
-          style={{ width: "100%", maxWidth: "400px", marginBottom: "30px" }}
+          style={{ width: "100%", maxWidth: "420px", marginBottom: "clamp(16px, 3vw, 24px)" }}
         >
           <div style={{
             background: "#FFFFFF",
             border: "4px solid #14213D",
             borderRadius: "24px",
-            padding: "24px",
-            boxShadow: "8px 8px 0px #14213D",
+            padding: "clamp(16px, 3vw, 24px)",
+            boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D",
             position: "relative",
             zIndex: 2,
+            boxSizing: "border-box",
           }}>
-            <h1 style={{ fontSize: "2rem", color: "#3A86FF", marginBottom: "12px", display: "flex", alignItems: "center", gap: "10px" }}>
-              <span style={{ fontSize: "2.5rem" }}>--</span> Hey traveler!
+            <h1 style={{ fontSize: "clamp(1.5rem, 4vw, 2rem)", color: "#3A86FF", marginBottom: "8px", display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)" }}>--</span> Hey traveler!
             </h1>
-            <p style={{ fontSize: "1.1rem", color: "var(--text-main)", lineHeight: "1.6", fontWeight: "600", margin: 0 }}>
+            <p style={{ fontSize: "clamp(0.95rem, 2vw, 1.1rem)", color: "var(--text-main)", lineHeight: "1.5", fontWeight: "600", margin: 0 }}>
               Welcome back! I'm excited to see where you're heading next. Log in so we can keep tracking your amazing, eco-friendly journeys together!
             </p>
             {/* Speech bubble tail shadow */}
@@ -124,12 +125,12 @@ const Login = () => {
           src="/mascot.png"
           alt="Tripchain Mascot"
           style={{
-            width: "250px",
-            height: "250px",
+            width: "clamp(150px, 30vw, 240px)",
+            height: "clamp(150px, 30vw, 240px)",
             objectFit: "cover",
             borderRadius: "50%",
             border: "4px solid #14213D",
-            boxShadow: "6px 6px 0px #14213D",
+            boxShadow: "clamp(4px, 1vw, 6px) clamp(4px, 1vw, 6px) 0px #14213D",
             background: "#FDFCDC"
           }}
         />
@@ -140,9 +141,9 @@ const Login = () => {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        style={{ flex: 1, padding: "50px 40px", display: "flex", flexDirection: "column", justifyContent: "center", background: "#FFFFFF", borderRadius: "24px", border: "3px solid #14213D", boxShadow: "8px 8px 0px #14213D" }}
+        style={{ flex: 1, padding: "clamp(24px, 4vw, 44px) clamp(16px, 4vw, 36px)", display: "flex", flexDirection: "column", justifyContent: "center", background: "#FFFFFF", borderRadius: "clamp(18px, 3vw, 24px)", border: "3px solid #14213D", boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D", width: "100%", boxSizing: "border-box" }}
       >
-        <h1 className="auth-title" style={{ fontSize: "2.5rem", marginBottom: "10px", color: "#14213D" }}>Welcome back <span>!!</span></h1>
+        <h1 className="auth-title" style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)", marginBottom: "8px", color: "#14213D" }}>Welcome back <span>!!</span></h1>
         <p className="auth-subtitle" style={{ color: "var(--text-muted)", marginBottom: "30px", fontSize: "1.1rem" }}>Log in to your Web3 travel dashboard</p>
 
         <GoogleAuthButton

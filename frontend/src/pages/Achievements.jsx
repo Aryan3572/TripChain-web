@@ -79,29 +79,29 @@ const Achievements = () => {
 
   return (
     <motion.div 
-      style={{ display: "flex", flexDirection: "column", gap: "40px", maxWidth: "1200px", margin: "0 auto", paddingBottom: "40px", paddingTop: "40px" }}
+      style={{ display: "flex", flexDirection: "column", gap: "clamp(24px, 4vw, 40px)", maxWidth: "1200px", margin: "0 auto", paddingBottom: "40px", paddingTop: "20px", width: "100%", boxSizing: "border-box" }}
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
       <motion.div variants={itemVariants} style={{ textAlign: "center" }}>
-        <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", fontSize: "3rem", color: "#14213D", marginBottom: "8px" }}>
-          <Medal size={48} color="#FFBE0B" /> Your Achievements
+        <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", fontSize: "clamp(2rem, 5vw, 3rem)", color: "#14213D", marginBottom: "8px", flexWrap: "wrap" }}>
+          <Medal size={40} color="#FFBE0B" /> Your Achievements
         </h1>
-        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)", fontWeight: "600" }}>Badges you’ve unlocked by traveling smarter</p>
+        <p style={{ fontSize: "clamp(1rem, 2.5vw, 1.2rem)", color: "var(--text-muted)", fontWeight: "600" }}>Badges you’ve unlocked by traveling smarter</p>
       </motion.div>
 
       <motion.div 
-        style={{ padding: "40px", background: "#FFFFFF", borderRadius: "24px", border: "4px solid #14213D", boxShadow: "8px 8px 0px #14213D" }} 
+        style={{ padding: "clamp(18px, 4vw, 40px)", background: "#FFFFFF", borderRadius: "clamp(18px, 3vw, 24px)", border: "4px solid #14213D", boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D", boxSizing: "border-box", width: "100%" }} 
         variants={itemVariants}
       >
         {badges.length === 0 && (
-          <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--text-muted)", background: "#F8FAFC", borderRadius: "16px", border: "3px dashed #cbd5e1" }}>
-            <Star size={64} color="#cbd5e1" style={{ marginBottom: "16px" }} />
-            <p style={{ fontSize: "1.3rem", fontWeight: "600", color: "#64748b" }}>No achievements yet. Start traveling eco-friendly to earn some!</p>
+          <div style={{ textAlign: "center", padding: "clamp(30px, 6vw, 60px) 20px", color: "var(--text-muted)", background: "#F8FAFC", borderRadius: "16px", border: "3px dashed #cbd5e1" }}>
+            <Star size={48} color="#cbd5e1" style={{ marginBottom: "16px" }} />
+            <p style={{ fontSize: "clamp(1.1rem, 3vw, 1.3rem)", fontWeight: "600", color: "#64748b" }}>No achievements yet. Start traveling eco-friendly to earn some!</p>
           </div>
         )}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "24px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 180px), 1fr))", gap: "clamp(14px, 2.5vw, 24px)" }}>
           {badges.map((b) => (
             <motion.div 
               key={b.id || b.name} 

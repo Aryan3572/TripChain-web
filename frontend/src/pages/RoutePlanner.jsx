@@ -47,14 +47,19 @@ function RoutePlanner() {
   const [error, setError] = useState("");
   const [showRewardModal, setShowRewardModal] = useState(false);
   const [rewardData, setRewardData] = useState(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 900);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 1024);
 
   const directionsClient = mbxDirections({ accessToken: mapboxgl.accessToken });
   const geocodingClient = mbxGeocoding({ accessToken: mapboxgl.accessToken });
 
-  // Handle Resize for responsive flex direction
+  // Handle Resize for responsive layout and Mapbox canvas resize
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 900);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+      if (mapRef.current) {
+        mapRef.current.resize();
+      }
+    };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -378,17 +383,17 @@ function RoutePlanner() {
 
   return (
     <motion.div 
-      style={{ display: "flex", gap: "36px", flexDirection: isMobile ? "column" : "row", maxWidth: "1280px", margin: "0 auto", paddingBottom: "40px" }}
+      style={{ display: "flex", gap: "clamp(20px, 3vw, 36px)", flexDirection: isMobile ? "column" : "row", maxWidth: "1280px", margin: "0 auto", paddingBottom: "40px", width: "100%", boxSizing: "border-box" }}
       initial="hidden" 
       animate="visible" 
       variants={containerVariants}
     >
       <motion.div 
-        style={{ flex: 1, padding: "36px", background: "#FFFFFF", borderRadius: "24px", border: "4px solid #14213D", boxShadow: "8px 8px 0px #14213D", display: "flex", flexDirection: "column" }} 
+        style={{ flex: 1, padding: "clamp(18px, 4vw, 36px)", background: "#FFFFFF", borderRadius: "clamp(18px, 3vw, 24px)", border: "4px solid #14213D", boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D", display: "flex", flexDirection: "column", boxSizing: "border-box", width: "100%" }} 
         variants={itemVariants}
       >
-        <h1 style={{fontSize: "2.2rem", marginBottom: "28px", display: "flex", alignItems: "center", gap: "12px", color: "#14213D"}}>
-          <Navigation size={36} color="#3A86FF" /> Plan Your Trip
+        <h1 style={{fontSize: "clamp(1.7rem, 4vw, 2.2rem)", marginBottom: "24px", display: "flex", alignItems: "center", gap: "12px", color: "#14213D"}}>
+          <Navigation size={34} color="#3A86FF" /> Plan Your Trip
         </h1>
 
         <form onSubmit={planRoute} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -402,7 +407,7 @@ function RoutePlanner() {
                 placeholder="Where do you want to go?"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
-                style={{ width: "100%", padding: "16px 16px 16px 48px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)" }}
+                style={{ width: "100%", padding: "16px 16px 16px 48px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)", boxSizing: "border-box" }}
                 onFocus={(e) => { e.target.style.borderColor = "#3A86FF"; e.target.style.background = "#FFFFFF"; }}
                 onBlur={(e) => { e.target.style.borderColor = "#14213D"; e.target.style.background = "#F8FAFC"; }}
               />
@@ -410,54 +415,54 @@ function RoutePlanner() {
           </label>
           
           {/* Mode Selector */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 82px), 1fr))", gap: "10px" }}>
             <motion.button 
               whileHover={{ y: -3 }} whileTap={{ y: 2 }}
               type="button" 
               onClick={() => setMode('driving')}
-              style={{ padding: '14px', fontSize: '14px', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'driving' ? "#3A86FF" : "#FFFFFF", color: mode === 'driving' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'driving' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s" }}
+              style={{ padding: 'clamp(10px, 2vw, 14px)', fontSize: 'clamp(12px, 2.5vw, 14px)', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'driving' ? "#3A86FF" : "#FFFFFF", color: mode === 'driving' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'driving' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s", cursor: "pointer" }}
             >
-              <Car size={26} /> Driving
+              <Car size={24} /> Driving
             </motion.button>
             <motion.button 
               whileHover={{ y: -3 }} whileTap={{ y: 2 }}
               type="button" 
               onClick={() => setMode('cycling')}
-              style={{ padding: '14px', fontSize: '14px', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'cycling' ? "#FF006E" : "#FFFFFF", color: mode === 'cycling' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'cycling' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s" }}
+              style={{ padding: 'clamp(10px, 2vw, 14px)', fontSize: 'clamp(12px, 2.5vw, 14px)', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'cycling' ? "#FF006E" : "#FFFFFF", color: mode === 'cycling' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'cycling' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s", cursor: "pointer" }}
             >
-              <Bike size={26} /> Cycling
+              <Bike size={24} /> Cycling
             </motion.button>
             <motion.button 
               whileHover={{ y: -3 }} whileTap={{ y: 2 }}
               type="button" 
               onClick={() => setMode('walking')}
-              style={{ padding: '14px', fontSize: '14px', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'walking' ? "#FFBE0B" : "#FFFFFF", color: mode === 'walking' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'walking' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s" }}
+              style={{ padding: 'clamp(10px, 2vw, 14px)', fontSize: 'clamp(12px, 2.5vw, 14px)', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'walking' ? "#FFBE0B" : "#FFFFFF", color: mode === 'walking' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'walking' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s", cursor: "pointer" }}
             >
-              <Footprints size={26} /> Walking
+              <Footprints size={24} /> Walking
             </motion.button>
             <motion.button 
               whileHover={{ y: -3 }} whileTap={{ y: 2 }}
               type="button" 
               onClick={() => setMode('transit')}
-              style={{ padding: '14px', fontSize: '14px', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'transit' ? "#8338EC" : "#FFFFFF", color: mode === 'transit' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'transit' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s" }}
+              style={{ padding: 'clamp(10px, 2vw, 14px)', fontSize: 'clamp(12px, 2.5vw, 14px)', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'transit' ? "#8338EC" : "#FFFFFF", color: mode === 'transit' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'transit' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s", cursor: "pointer" }}
             >
-              <Bus size={26} /> Transit
+              <Bus size={24} /> Transit
             </motion.button>
             <motion.button 
               whileHover={{ y: -3 }} whileTap={{ y: 2 }}
               type="button" 
               onClick={() => setMode('train')}
-              style={{ padding: '14px', fontSize: '14px', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'train' ? "#FF5400" : "#FFFFFF", color: mode === 'train' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'train' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s" }}
+              style={{ padding: 'clamp(10px, 2vw, 14px)', fontSize: 'clamp(12px, 2.5vw, 14px)', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'train' ? "#FF5400" : "#FFFFFF", color: mode === 'train' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'train' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s", cursor: "pointer" }}
             >
-              <Train size={26} /> Rail
+              <Train size={24} /> Rail
             </motion.button>
             <motion.button 
               whileHover={{ y: -3 }} whileTap={{ y: 2 }}
               type="button" 
               onClick={() => setMode('carpool')}
-              style={{ padding: '14px', fontSize: '14px', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'carpool' ? "#38B000" : "#FFFFFF", color: mode === 'carpool' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'carpool' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s" }}
+              style={{ padding: 'clamp(10px, 2vw, 14px)', fontSize: 'clamp(12px, 2.5vw, 14px)', fontWeight: 'bold', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', borderRadius: "16px", border: "3px solid #14213D", background: mode === 'carpool' ? "#38B000" : "#FFFFFF", color: mode === 'carpool' ? "#FFFFFF" : "#14213D", boxShadow: mode === 'carpool' ? "4px 4px 0px #14213D" : "2px 2px 0px #14213D", transition: "all 0.2s", cursor: "pointer" }}
             >
-              <Users size={26} /> Carpool
+              <Users size={24} /> Carpool
             </motion.button>
           </div>
 
@@ -517,7 +522,7 @@ function RoutePlanner() {
                   gap: "6px",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "6px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#059669", fontWeight: "800", fontSize: "1.2rem" }}>
                     <Leaf size={22} /> Eco Route
                     <span style={{ background: "#10B981", color: "#FFFFFF", fontSize: "0.75rem", padding: "2px 8px", borderRadius: "10px", fontWeight: "bold" }}>
@@ -533,7 +538,7 @@ function RoutePlanner() {
                   )}
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: "4px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: "4px", flexWrap: "wrap", gap: "6px" }}>
                   <p style={{ fontWeight: "800", fontSize: "1.4rem", color: "#14213D", margin: 0 }}>
                     {ecoInfo.km} km <span style={{ color: "var(--text-muted)", fontSize: "1.05rem", fontWeight: "600" }}>in {ecoInfo.min} min</span>
                   </p>
@@ -543,7 +548,7 @@ function RoutePlanner() {
                 </div>
 
                 {/* Eco Rewards Callout */}
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", background: isEcoSelected ? "#FFFFFF" : "#E2E8F0", padding: "6px 12px", borderRadius: "10px", marginTop: "4px", fontSize: "0.85rem", fontWeight: "700", color: "#047857" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", background: isEcoSelected ? "#FFFFFF" : "#E2E8F0", padding: "6px 12px", borderRadius: "10px", marginTop: "4px", fontSize: "0.85rem", fontWeight: "700", color: "#047857", flexWrap: "wrap" }}>
                   <Sparkles size={16} /> Earn +50 Eco Points & save ~{ecoInfo.co2Saved} kg CO₂!
                 </div>
               </motion.div>
@@ -566,7 +571,7 @@ function RoutePlanner() {
                   gap: "6px",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "6px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#3A86FF", fontWeight: "800", fontSize: "1.2rem" }}>
                     <Zap size={22} /> Fastest Route
                   </div>
@@ -579,7 +584,7 @@ function RoutePlanner() {
                   )}
                 </div>
 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: "4px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: "4px", flexWrap: "wrap", gap: "6px" }}>
                   <p style={{ fontWeight: "800", fontSize: "1.4rem", color: "#14213D", margin: 0 }}>
                     {routeInfo.km} km <span style={{ color: "var(--text-muted)", fontSize: "1.05rem", fontWeight: "600" }}>in {routeInfo.min} min</span>
                   </p>
@@ -588,7 +593,7 @@ function RoutePlanner() {
                   </span>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", background: !isEcoSelected ? "#FFFFFF" : "#E2E8F0", padding: "6px 12px", borderRadius: "10px", marginTop: "4px", fontSize: "0.85rem", fontWeight: "700", color: "#1E40AF" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", background: !isEcoSelected ? "#FFFFFF" : "#E2E8F0", padding: "6px 12px", borderRadius: "10px", marginTop: "4px", fontSize: "0.85rem", fontWeight: "700", color: "#1E40AF", flexWrap: "wrap" }}>
                   <Zap size={16} /> Earn +10 Standard Points
                 </div>
               </motion.div>
@@ -636,13 +641,15 @@ function RoutePlanner() {
         variants={itemVariants}
         ref={containerRef}
         style={{
-          flex: 1.5,
-          minHeight: "650px",
+          flex: isMobile ? "none" : 1.5,
+          height: isMobile ? "clamp(340px, 48vh, 550px)" : "auto",
+          minHeight: isMobile ? "340px" : "650px",
           width: "100%",
-          borderRadius: "24px",
+          borderRadius: "clamp(18px, 3vw, 24px)",
           border: "4px solid #14213D",
-          boxShadow: "8px 8px 0px #14213D",
+          boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D",
           overflow: "hidden",
+          boxSizing: "border-box",
         }}
       />
 

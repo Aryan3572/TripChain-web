@@ -22,6 +22,8 @@ const NotificationModal = ({ isOpen, onClose, message }) => {
             alignItems: "center",
             justifyContent: "center",
             zIndex: 3000,
+            padding: "clamp(12px, 3vw, 20px)",
+            boxSizing: "border-box",
           }}
         >
           <motion.div
@@ -31,27 +33,30 @@ const NotificationModal = ({ isOpen, onClose, message }) => {
             className="glass-card"
             style={{
               background: "#FFFFFF",
-              padding: "32px",
-              width: "90%",
+              padding: "clamp(24px, 5vw, 36px) clamp(16px, 4vw, 28px)",
+              width: "100%",
               maxWidth: "400px",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              boxSizing: "border-box",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: "20px",
+              gap: "16px",
               textAlign: "center",
               border: "3px solid #14213D",
-              boxShadow: "6px 6px 0px #14213D",
+              boxShadow: "clamp(4px, 1vw, 6px) clamp(4px, 1vw, 6px) 0px #14213D",
               borderRadius: "24px"
             }}
           >
-            <CheckCircle2 size={64} color="#10B981" />
-            <h3 style={{ margin: 0, fontSize: "1.5rem", color: "#14213D", fontFamily: "'Outfit', sans-serif" }}>Success!</h3>
-            <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "1.1rem" }}>{message}</p>
+            <CheckCircle2 size={56} color="#10B981" />
+            <h3 style={{ margin: 0, fontSize: "clamp(1.25rem, 3.5vw, 1.5rem)", color: "#14213D", fontFamily: "'Outfit', sans-serif" }}>Success!</h3>
+            <p style={{ margin: 0, color: "var(--text-muted)", fontSize: "clamp(0.95rem, 2.5vw, 1.1rem)", wordBreak: "break-word" }}>{message}</p>
             
             <button
               onClick={onClose}
               className="btn btn-primary"
-              style={{ width: "100%", marginTop: "10px", display: "flex", justifyContent: "center", gap: "8px" }}
+              style={{ width: "100%", marginTop: "8px", display: "flex", justifyContent: "center", gap: "8px" }}
             >
               <X size={20} /> Close
             </button>
