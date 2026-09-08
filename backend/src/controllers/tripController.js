@@ -1,7 +1,7 @@
-// src/controllers/tripController.js
 import prisma from "../config/prisma.js";
 import { tripSchema } from "../validations/tripValidation.js";
-import { estimateTripMetrics } from "../utils/metrics.js";
+import { estimateTripMetrics, calculateTripRewards } from "../utils/metrics.js";
+import { checkAndAwardBadges } from "./achievementController.js";
 import { Parser } from "json2csv";
 
 export const addTrip = async (req, res) => {
@@ -22,6 +22,14 @@ export const addTrip = async (req, res) => {
     // Auto-calc cost and co2
     const { cost, co2 } = estimateTripMetrics(parsed.mode, parsed.distance);
 
+    // Calculate rewards (points & co2Saved)
+    const { points, co2Saved, isEco } = calculateTripRewards(
+      parsed.routeType,
+      parsed.mode,
+      parsed.distance,
+      parsed.co2Saved
+    );
+
     const trip = await prisma.trip.create({
       data: {
         from: parsed.from,
@@ -31,16 +39,37 @@ export const addTrip = async (req, res) => {
         duration: parsed.duration,
         cost,
         co2,
+        routeType: parsed.routeType || "fastest",
+        co2Saved,
+        points: parsed.points || points,
         date: new Date(parsed.date),
         // ✅ Use relation connect instead of manual userId
         user: { connect: { id: userId } },
       },
     });
 
+    // Check for newly earned badges right away
+    let newlyAwarded = [];
+    try {
+      const evaluation = await checkAndAwardBadges(userId);
+      newlyAwarded = evaluation.newlyAwarded || [];
+    } catch (badgeErr) {
+      console.warn("Could not evaluate badges during trip creation:", badgeErr.message);
+    }
+
     res.status(201).json({
       success: true,
-      message: "Trip added successfully",
+      message: isEco
+        ? `Eco trip saved! You earned +${trip.points} Eco Points and saved ${co2Saved} kg CO₂!`
+        : "Trip added successfully",
       trip,
+      rewards: {
+        routeType: trip.routeType,
+        pointsEarned: trip.points,
+        co2Saved: trip.co2Saved,
+        isEco,
+        newBadges: newlyAwarded,
+      },
     });
   } catch (err) {
     console.error("Error adding trip:", err);

@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/api";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 import { motion } from "framer-motion";
-import { UserPlus, User, Mail, Lock, CheckCircle2 } from "lucide-react";
+import { UserPlus, User, Mail, Lock } from "lucide-react";
 
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
+  const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mascotState, setMascotState] = useState("normal");
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     setMsg("");
+    setIsError(false);
     setLoading(true);
 
     try {
@@ -25,8 +28,30 @@ const Signup = () => {
       setTimeout(() => navigate("/login"), 1200);
     } catch (err) {
       setMsg(err.message || "Signup failed");
+      setIsError(true);
       setMascotState("normal");
     }
+    setLoading(false);
+  };
+
+  const handleGoogleSignup = async (credential) => {
+    setMsg("");
+    setIsError(false);
+    setLoading(true);
+
+    try {
+      const data = await apiRequest("/api/auth/google", "POST", { credential });
+      setMascotState("happy");
+      localStorage.setItem("tripchain_token", data.token);
+      if (data.user?.email) localStorage.setItem("tripchain_userEmail", data.user.email);
+      setMsg("Google account ready! Redirecting...");
+      setTimeout(() => navigate("/"), 800);
+    } catch (err) {
+      setMsg(err.message || "Google sign-up failed");
+      setIsError(true);
+      setMascotState("normal");
+    }
+
     setLoading(false);
   };
 
@@ -121,6 +146,14 @@ const Signup = () => {
           <h1 className="auth-title" style={{ fontSize: "2.5rem", marginBottom: "10px", color: "#14213D" }}>Create your account</h1>
           <p className="auth-subtitle" style={{ color: "var(--text-muted)", marginBottom: "30px", fontSize: "1.1rem" }}>Join Tripchain and start tracking your journeys.</p>
 
+          <GoogleAuthButton
+            label="Sign up with Google"
+            disabled={loading}
+            onCredential={handleGoogleSignup}
+            onError={(message) => setMsg(message)}
+          />
+          <div className="auth-divider"><span>OR</span></div>
+
           <form className="auth-form" onSubmit={handleSignup} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <label style={{ display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
               Full name
@@ -174,7 +207,7 @@ const Signup = () => {
               </div>
             </label>
 
-            {msg && <div className="info-text" style={{ color: msg.includes("failed") ? '#EF4444' : '#10B981', background: msg.includes("failed") ? "#FEF2F2" : "#D1FAE5", padding: "12px", borderRadius: "12px", border: `3px solid ${msg.includes("failed") ? "#FCA5A5" : "#6EE7B7"}`, fontWeight: "bold" }}>{msg}</div>}
+            {msg && <div className="info-text" style={{ color: isError ? '#EF4444' : '#10B981', background: isError ? "#FEF2F2" : "#D1FAE5", padding: "12px", borderRadius: "12px", border: `3px solid ${isError ? "#FCA5A5" : "#6EE7B7"}`, fontWeight: "bold" }}>{msg}</div>}
 
             <motion.button
               whileHover={{ y: -2 }}

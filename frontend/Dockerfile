@@ -3,6 +3,13 @@ FROM node:18-alpine AS build
 
 WORKDIR /app
 
+# CRA embeds REACT_APP_* values at build time. The Google client ID is public;
+# do not pass server secrets to this image.
+ARG REACT_APP_API_BASE
+ARG REACT_APP_GOOGLE_CLIENT_ID
+ENV REACT_APP_API_BASE=$REACT_APP_API_BASE
+ENV REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID
+
 # Copy package files
 COPY package*.json ./
 RUN npm install --legacy-peer-deps

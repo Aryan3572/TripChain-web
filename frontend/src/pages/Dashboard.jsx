@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { apiRequest } from "../api/api";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { LayoutDashboard, Activity, Leaf, Bell, Route, Navigation, MapPin } from "lucide-react";
+import { LayoutDashboard, Activity, Leaf, Bell, Route, Navigation, MapPin, Zap, Award, Globe, Lightbulb, Info } from "lucide-react";
 import "../styles/dashboard.css"; 
 
 const Dashboard = () => {
@@ -55,7 +55,7 @@ const Dashboard = () => {
           <LayoutDashboard size={36} color="var(--primary)" fill="var(--primary)" stroke="#14213D" strokeWidth={2} />
           Dashboard
         </h2>
-        <p>Your travel analytics, eco performance & achievements at a glance ✨</p>
+        <p>Your travel analytics, eco performance & achievements at a glance</p>
       </div>
 
       <motion.div 
@@ -65,7 +65,7 @@ const Dashboard = () => {
         style={{ display: "flex", flexDirection: "column", gap: "24px" }}
       >
         {/* TOP GRID CARDS */}
-        <div className="grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
+        <div className="grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px" }}>
           <motion.div className="stat-card glass-card hover-card" variants={itemVariants} onClick={() => navigate("/insights")} style={{ cursor: "pointer", padding: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
             <h4 style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-muted)", margin: 0 }}><Navigation size={20} color="#3A86FF" /> Total Trips</h4>
             <p className="stat-value" style={{ fontSize: "36px", fontWeight: "800", color: "var(--text-main)", margin: 0 }}>{overview?.totalTrips ?? 0}</p>
@@ -82,6 +82,16 @@ const Dashboard = () => {
               {ecoScore ?? overview?.ecoScore ?? 0}
             </p>
           </motion.div>
+
+          <motion.div className="stat-card glass-card hover-card" variants={itemVariants} onClick={() => navigate("/planner")} style={{ cursor: "pointer", padding: "24px", display: "flex", flexDirection: "column", gap: "12px", background: "linear-gradient(135deg, rgba(209, 250, 229, 0.6) 0%, rgba(255, 255, 255, 0.8) 100%)", border: "3px solid #10B981" }}>
+            <h4 style={{ display: "flex", alignItems: "center", gap: "8px", color: "#047857", margin: 0 }}><Leaf size={20} color="#059669" /> Eco Routes</h4>
+            <p className="stat-value" style={{ fontSize: "36px", fontWeight: "800", color: "#065F46", margin: 0 }}>
+              {overview?.ecoRoutesCount ?? 0}
+              <span style={{ fontSize: "16px", fontWeight: "700", color: "#059669", marginLeft: "8px" }}>
+                ({overview?.totalCO2Saved ?? 0} kg CO₂ saved)
+              </span>
+            </p>
+          </motion.div>
         </div>
 
         {/* RECENT TRIPS */}
@@ -95,34 +105,62 @@ const Dashboard = () => {
           )}
 
           <div className="recent-trips" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            {recentTrips.map((trip) => (
-              <div
-                key={trip.id}
-                className="trip-card"
-                onClick={() => navigate(`/insights?trip=${trip.id}`)}
-                style={{
-                  display: "flex", flexDirection: "column", gap: "8px", padding: "16px",
-                  background: "rgba(255,255,255,0.5)", border: "2px solid rgba(20,33,61,0.1)",
-                  borderRadius: "14px", cursor: "pointer", transition: "all 0.2s"
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.borderColor = "var(--primary)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = "none";
-                  e.currentTarget.style.borderColor = "rgba(20,33,61,0.1)";
-                }}
-              >
-                <div className="trip-header" style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "16px", color: "#3A86FF" }}>
-                  <MapPin size={18} /> <strong>{trip.from}</strong> → <strong>{trip.to}</strong>
-                </div>
+            {recentTrips.map((trip) => {
+              const isEco = trip.routeType === "eco";
+              return (
+                <div
+                  key={trip.id}
+                  className="trip-card"
+                  onClick={() => navigate(`/insights?trip=${trip.id}`)}
+                  style={{
+                    display: "flex", flexDirection: "column", gap: "8px", padding: "16px",
+                    background: isEco ? "rgba(209, 250, 229, 0.35)" : "rgba(255,255,255,0.5)", 
+                    border: isEco ? "2px solid rgba(16, 185, 129, 0.4)" : "2px solid rgba(20,33,61,0.1)",
+                    borderRadius: "14px", cursor: "pointer", transition: "all 0.2s"
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.borderColor = isEco ? "#10B981" : "var(--primary)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = "none";
+                    e.currentTarget.style.borderColor = isEco ? "rgba(16, 185, 129, 0.4)" : "rgba(20,33,61,0.1)";
+                  }}
+                >
+                  <div className="trip-header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "16px", color: "#3A86FF" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <MapPin size={18} /> <strong>{trip.from}</strong> → <strong>{trip.to}</strong>
+                    </div>
 
-                <p className="trip-meta" style={{ fontSize: "14px", color: "var(--text-muted)", margin: 0, paddingLeft: "26px" }}>
-                  {trip.distance} km • {trip.duration} min • <span style={{ textTransform: "capitalize" }}>{trip.mode}</span>
-                </p>
-              </div>
-            ))}
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      {isEco ? (
+                        <span style={{ background: "#D1FAE5", color: "#065F46", padding: "3px 10px", borderRadius: "8px", fontSize: "12px", fontWeight: "800", border: "1.5px solid #10B981", display: "flex", alignItems: "center", gap: "5px" }}>
+                          <Leaf size={13} color="#059669" /> Eco Route
+                        </span>
+                      ) : (
+                        <span style={{ background: "#DBEAFE", color: "#1E40AF", padding: "3px 10px", borderRadius: "8px", fontSize: "12px", fontWeight: "800", border: "1.5px solid #3B82F6", display: "flex", alignItems: "center", gap: "5px" }}>
+                          <Zap size={13} color="#2563EB" /> Fastest
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <p className="trip-meta" style={{ fontSize: "14px", color: "var(--text-muted)", margin: 0, paddingLeft: "26px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                    <span>{trip.distance} km • {trip.duration} min • <span style={{ textTransform: "capitalize" }}>{trip.mode}</span></span>
+                    {trip.co2Saved > 0 && (
+                      <span style={{ color: "#059669", fontWeight: "700" }}>
+                        • Saved ~{trip.co2Saved} kg CO₂
+                      </span>
+                    )}
+                    {trip.points && (
+                      <span style={{ color: "#D97706", fontWeight: "700" }}>
+                        • +{trip.points} pts
+                      </span>
+                    )}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </motion.section>
 
@@ -137,16 +175,39 @@ const Dashboard = () => {
           )}
 
           <ul className="notifications-list" style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "10px" }}>
-            {notifications.map((n, idx) => (
-              <li key={idx} className={`notif-pill notif-${n.type || "info"}`} style={{
-                padding: "12px 16px", borderRadius: "12px", fontSize: "14px", fontWeight: "600",
-                background: n.type === "success" ? "rgba(16, 185, 129, 0.1)" : "rgba(58, 134, 255, 0.1)",
-                color: n.type === "success" ? "#10B981" : "#3A86FF",
-                border: `2px solid ${n.type === "success" ? "rgba(16, 185, 129, 0.2)" : "rgba(58, 134, 255, 0.2)"}`
-              }}>
-                {n.message}
-              </li>
-            ))}
+            {notifications.map((n, idx) => {
+              let NotifIcon = Info;
+              let iconColor = "#3A86FF";
+              if (n.type === "success") {
+                NotifIcon = Leaf;
+                iconColor = "#10B981";
+              } else if (n.type === "achievement") {
+                NotifIcon = Award;
+                iconColor = "#F59E0B";
+              } else if (n.type === "goal") {
+                NotifIcon = Globe;
+                iconColor = "#6366F1";
+              } else if (n.type === "tip") {
+                NotifIcon = Lightbulb;
+                iconColor = "#F59E0B";
+              } else if (n.type === "summary") {
+                NotifIcon = Activity;
+                iconColor = "#3A86FF";
+              }
+
+              return (
+                <li key={idx} className={`notif-pill notif-${n.type || "info"}`} style={{
+                  padding: "12px 16px", borderRadius: "12px", fontSize: "14px", fontWeight: "600",
+                  background: n.type === "success" ? "rgba(16, 185, 129, 0.1)" : "rgba(58, 134, 255, 0.1)",
+                  color: n.type === "success" ? "#065F46" : "#1E40AF",
+                  border: `2px solid ${n.type === "success" ? "rgba(16, 185, 129, 0.25)" : "rgba(58, 134, 255, 0.25)"}`,
+                  display: "flex", alignItems: "center", gap: "10px"
+                }}>
+                  <NotifIcon size={18} color={iconColor} style={{ flexShrink: 0 }} />
+                  <span>{n.message}</span>
+                </li>
+              );
+            })}
           </ul>
         </motion.section>
       </motion.div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { apiRequest } from "../api/api";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 import { motion } from "framer-motion";
 import { LogIn, Mail, Lock } from "lucide-react";
 
@@ -29,6 +30,24 @@ const Login = () => {
       setTimeout(() => navigate("/"), 800);
     } catch (err) {
       setErrorMsg(err.message || "Login failed");
+      setMascotState("normal");
+    }
+
+    setLoading(false);
+  };
+
+  const handleGoogleLogin = async (credential) => {
+    setErrorMsg("");
+    setLoading(true);
+
+    try {
+      const data = await apiRequest("/api/auth/google", "POST", { credential });
+      setMascotState("happy");
+      localStorage.setItem("tripchain_token", data.token);
+      if (data.user?.email) localStorage.setItem("tripchain_userEmail", data.user.email);
+      setTimeout(() => navigate("/"), 800);
+    } catch (err) {
+      setErrorMsg(err.message || "Google login failed");
       setMascotState("normal");
     }
 
@@ -125,6 +144,14 @@ const Login = () => {
       >
         <h1 className="auth-title" style={{ fontSize: "2.5rem", marginBottom: "10px", color: "#14213D" }}>Welcome back <span>!!</span></h1>
         <p className="auth-subtitle" style={{ color: "var(--text-muted)", marginBottom: "30px", fontSize: "1.1rem" }}>Log in to your Web3 travel dashboard</p>
+
+        <GoogleAuthButton
+          label="Continue with Google"
+          disabled={loading}
+          onCredential={handleGoogleLogin}
+          onError={(message) => setErrorMsg(message)}
+        />
+        <div className="auth-divider"><span>OR</span></div>
 
         <form className="auth-form" onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
           <label style={{ display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>

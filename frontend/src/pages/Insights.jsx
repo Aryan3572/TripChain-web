@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { apiRequest } from "../api/api";
 import { motion } from "framer-motion";
-import { BarChart3, PieChart, Zap, Map, Lightbulb } from "lucide-react";
+import { BarChart3, PieChart, Zap, Map, Lightbulb, Leaf } from "lucide-react";
 
 const Insights = () => {
   const [weekly, setWeekly] = useState([]);
@@ -51,7 +51,7 @@ const Insights = () => {
         <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", fontSize: "3rem", color: "#14213D", marginBottom: "8px" }}>
           <Lightbulb size={48} color="#FF006E" /> Trip Insights
         </h1>
-        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)", fontWeight: "600" }}>Your recent travel behaviour, patterns & efficiency ✨</p>
+        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)", fontWeight: "600" }}>Your recent travel behaviour, patterns & efficiency</p>
       </motion.div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "32px" }}>
@@ -124,8 +124,46 @@ const Insights = () => {
                 <strong style={{ fontSize: "1.1rem", color: "#14213D" }}>Avg CO₂/km</strong> 
                 <strong style={{color: "#3A86FF", fontSize: "1.3rem"}}>{impact.avgCO2perKm.toFixed(3)} g</strong>
               </div>
+              {impact.totalCO2Saved > 0 && (
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#F0FDF4", padding: "16px", borderRadius: "16px", border: "3px solid #16A34A" }}>
+                  <strong style={{ fontSize: "1.1rem", color: "#065F46" }}>CO₂ Saved</strong> 
+                  <strong style={{color: "#16A34A", fontSize: "1.3rem"}}>~{impact.totalCO2Saved} kg</strong>
+                </div>
+              )}
             </div>
           )}
+        </motion.div>
+
+        {/* ROUTE STRATEGY (ECO VS FASTEST) */}
+        <motion.div 
+          style={{ padding: "32px", background: "#FFFFFF", borderRadius: "24px", border: "4px solid #14213D", boxShadow: "8px 8px 0px #14213D", display: "flex", flexDirection: "column", gap: "16px" }} 
+          variants={itemVariants}
+        >
+          <h3 style={{ display: "flex", alignItems: "center", gap: "12px", color: "#14213D", fontSize: "1.6rem", borderBottom: "3px solid #14213D", paddingBottom: "12px" }}>
+            <Leaf size={32} color="#10B981" /> Route Choices
+          </h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#D1FAE5", padding: "16px", borderRadius: "16px", border: "3px solid #10B981" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Leaf size={20} color="#059669" />
+                <strong style={{ fontSize: "1.1rem", color: "#065F46" }}>Eco Routes</strong>
+              </div>
+              <strong style={{ color: "#047857", fontSize: "1.3rem" }}>{impact?.ecoRoutesCount ?? 0} trips</strong>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#EFF6FF", padding: "16px", borderRadius: "16px", border: "3px solid #3B82F6" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Zap size={20} color="#2563EB" />
+                <strong style={{ fontSize: "1.1rem", color: "#1E40AF" }}>Fastest Routes</strong>
+              </div>
+              <strong style={{ color: "#1D4ED8", fontSize: "1.3rem" }}>{impact?.fastestRoutesCount ?? 0} trips</strong>
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#FEF3C7", padding: "16px", borderRadius: "16px", border: "3px solid #D97706" }}>
+              <strong style={{ fontSize: "1.1rem", color: "#92400E" }}>Carbon Prevented</strong>
+              <strong style={{ color: "#B45309", fontSize: "1.3rem" }}>~{impact?.totalCO2Saved ?? 0} kg CO₂</strong>
+            </div>
+          </div>
         </motion.div>
 
         {/* ROUTE PATTERNS */}

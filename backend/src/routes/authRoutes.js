@@ -3,6 +3,7 @@ import express from "express";
 import {
   registerUser,
   loginUser,
+  loginWithGoogle,
   getUserProfile,
 } from "../controllers/authController.js";
 import { authenticate } from "../middleware/authMiddleware.js";
@@ -11,6 +12,7 @@ const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post("/google", loginWithGoogle);
 router.get("/me", authenticate, getUserProfile);
 
 export default router;

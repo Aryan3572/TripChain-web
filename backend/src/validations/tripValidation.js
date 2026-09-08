@@ -7,9 +7,15 @@ export const tripSchema = z.object({
 
   mode: z
     .string()
-    .transform((val) => val.toLowerCase())
+    .transform((val) => {
+      const lower = val.toLowerCase();
+      if (lower === "cycling") return "bike";
+      if (lower === "walking") return "walk";
+      if (lower === "rail") return "train";
+      return lower;
+    })
     .refine(
-      (val) => ["car", "bus", "train", "walk", "bike", "cab", "scooter"].includes(val),
+      (val) => ["car", "bus", "train", "walk", "bike", "cab", "scooter", "transit", "carpool"].includes(val),
       { message: "Invalid mode" }
     ),
 
@@ -24,4 +30,20 @@ export const tripSchema = z.object({
     .refine((val) => val > 0, { message: "Duration must be positive" }),
 
   date: z.string().datetime("Invalid date format"),
+
+  routeType: z
+    .enum(["fastest", "eco"])
+    .optional()
+    .default("fastest"),
+
+  co2Saved: z
+    .union([z.number(), z.string()])
+    .transform((val) => Math.max(0, Number(val) || 0))
+    .optional()
+    .default(0),
+
+  points: z
+    .union([z.number(), z.string()])
+    .transform((val) => Number(val) || 0)
+    .optional(),
 });

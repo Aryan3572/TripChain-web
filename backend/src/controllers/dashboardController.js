@@ -126,7 +126,14 @@ export const getDashboardOverview = async (req, res) => {
     const totalCost = trips.reduce((s, t) => s + (t.cost || 0), 0);
     const totalCO2 = trips.reduce((s, t) => s + (t.co2 || 0), 0);
     const avgCO2PerKm = totalCO2 / (totalDistance || 1);
-    const ecoScore = Math.min(Math.max(Math.round(100 - avgCO2PerKm * 10), 0), 100);
+    
+    const ecoRoutesCount = trips.filter((t) => t.routeType === "eco").length;
+    const fastestRoutesCount = trips.filter((t) => t.routeType !== "eco").length;
+    const totalCO2Saved = trips.reduce((s, t) => s + (t.co2Saved || 0), 0);
+    const totalPoints = trips.reduce((s, t) => s + (t.points || 10), 0);
+
+    let ecoScore = 100 - (avgCO2PerKm * 10) + (ecoRoutesCount * 3);
+    ecoScore = Math.min(Math.max(Math.round(ecoScore), 0), 100);
 
     const overview = {
       totalTrips,
@@ -136,6 +143,10 @@ export const getDashboardOverview = async (req, res) => {
       avgCO2PerKm: Number(avgCO2PerKm.toFixed(2)),
       ecoScore,
       badgesEarned: badges.length,
+      ecoRoutesCount,
+      fastestRoutesCount,
+      totalCO2Saved: Number(totalCO2Saved.toFixed(2)),
+      totalPoints,
     };
 
     res.status(200).json({

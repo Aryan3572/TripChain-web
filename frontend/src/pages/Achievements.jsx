@@ -11,8 +11,10 @@ const BadgeIcon = ({ name }) => {
   let color = "#E11D48";
   let border = "#BE123C";
 
-  if (n.includes('eco') || n.includes('green') || n.includes('leaf') || n.includes('tree')) {
+  if (n.includes('eco') || n.includes('green') || n.includes('leaf') || n.includes('tree') || n.includes('pathfinder')) {
     Icon = Leaf; bg = "#D1FAE5"; color = "#059669"; border = "#047857";
+  } else if (n.includes('carbon') || n.includes('crusader') || n.includes('shield')) {
+    Icon = ShieldCheck; bg = "#DCFCE7"; color = "#15803D"; border = "#166534";
   } else if (n.includes('fast') || n.includes('speed') || n.includes('zap') || n.includes('quick')) {
     Icon = Zap; bg = "#DBEAFE"; color = "#2563EB"; border = "#1D4ED8";
   } else if (n.includes('streak') || n.includes('fire') || n.includes('hot')) {
@@ -86,7 +88,7 @@ const Achievements = () => {
         <h1 style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", fontSize: "3rem", color: "#14213D", marginBottom: "8px" }}>
           <Medal size={48} color="#FFBE0B" /> Your Achievements
         </h1>
-        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)", fontWeight: "600" }}>Badges you’ve unlocked by traveling smarter ✨</p>
+        <p style={{ fontSize: "1.2rem", color: "var(--text-muted)", fontWeight: "600" }}>Badges you’ve unlocked by traveling smarter</p>
       </motion.div>
 
       <motion.div 

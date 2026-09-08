@@ -77,7 +77,10 @@ export const getImpactInsights = async (req, res) => {
 
     const totalCO2 = trips.reduce((s, t) => s + (t.co2 || 0), 0);
     const totalCost = trips.reduce((s, t) => s + (t.cost || 0), 0);
+    const totalCO2Saved = trips.reduce((s, t) => s + (t.co2Saved || 0), 0);
     const avgCO2perKm = totalCO2 / (trips.reduce((s, t) => s + (t.distance || 0), 0) || 1);
+    const ecoRoutesCount = trips.filter((t) => t.routeType === "eco").length;
+    const fastestRoutesCount = trips.filter((t) => t.routeType !== "eco").length;
 
     res.status(200).json({
       success: true,
@@ -85,7 +88,10 @@ export const getImpactInsights = async (req, res) => {
         totalTrips: trips.length,
         totalCost,
         totalCO2,
+        totalCO2Saved: Number(totalCO2Saved.toFixed(2)),
         avgCO2perKm: Number(avgCO2perKm.toFixed(3)),
+        ecoRoutesCount,
+        fastestRoutesCount,
       },
     });
   } catch (err) {

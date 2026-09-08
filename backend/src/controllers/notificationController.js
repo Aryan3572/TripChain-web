@@ -35,54 +35,65 @@ export const getUserNotifications = async (req, res) => {
     // Personalized notifications
     const notifications = [];
 
-    // 🏁 Weekly summary
+    const ecoTrips = trips.filter((t) => t.routeType === "eco");
+    const totalCO2Saved = trips.reduce((s, t) => s + (t.co2Saved || 0), 0);
+
+    // Weekly summary
     notifications.push({
       type: "summary",
       message: `You completed ${totalTrips} trips covering ${totalDistance.toFixed(1)} km this week.`,
     });
 
-    // 🌱 Eco reminder
+    // Eco route praise
+    if (ecoTrips.length > 0) {
+      notifications.push({
+        type: "success",
+        message: `Awesome! You picked Eco Routes ${ecoTrips.length} time${ecoTrips.length > 1 ? "s" : ""}, preventing ~${totalCO2Saved.toFixed(2)} kg of CO₂ emissions!`,
+      });
+    }
+
+    // Eco reminder
     if (avgCO2PerKm > 0.5) {
       notifications.push({
         type: "tip",
         message: `Your average CO₂ per km is ${avgCO2PerKm.toFixed(
           2
-        )}g — try using more eco-friendly modes like walking or cycling.`,
+        )}g — try picking the Eco Route option when planning your trips!`,
       });
     } else {
       notifications.push({
         type: "success",
-        message: "Great job! You’re maintaining a low CO₂ footprint this week 🌿",
+        message: "Great job! You’re maintaining a low CO₂ footprint this week.",
       });
     }
 
-    // 🚗 Mode habit
+    // Mode habit
     if (topMode === "Car") {
       notifications.push({
         type: "info",
-        message: "You’re using your car most frequently. Try switching 1-2 trips to bus or bike! 🚲",
+        message: "You’re using your car most frequently. Try switching 1-2 trips to bus or bike!",
       });
     } else if (topMode === "Walk" || topMode === "Cycle") {
       notifications.push({
         type: "success",
-        message: `You're an active traveler — most of your trips are by ${topMode.toLowerCase()}! 🏃‍♂️`,
+        message: `You're an active traveler — most of your trips are by ${topMode.toLowerCase()}!`,
       });
     }
 
-    // 🏅 Badge earned this week
+    // Badge earned this week
     if (badges.length > 0) {
       const recentBadge = badges[badges.length - 1];
       notifications.push({
         type: "achievement",
-        message: `Congrats! You earned the “${recentBadge.name}” badge ${recentBadge.icon}`,
+        message: `Congrats! You unlocked the “${recentBadge.name}” badge.`,
       });
     }
 
-    // 🌍 Eco goal suggestion
+    // Eco goal suggestion
     if (totalDistance > 100) {
       notifications.push({
         type: "goal",
-        message: "You’ve traveled over 100 km this week — try offsetting your emissions with eco-credits 🌎",
+        message: "You’ve traveled over 100 km this week — try offsetting your emissions with eco-credits.",
       });
     }
 

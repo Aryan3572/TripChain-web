@@ -44,6 +44,7 @@ For security reasons, `.env` files containing API keys and database credentials 
 2. Add your Mapbox token:
 ```env
 REACT_APP_MAPBOX_TOKEN=your_mapbox_token_here
+REACT_APP_GOOGLE_CLIENT_ID=your_google_web_client_id
 ```
 *(Reach out to the repository owner to get the secure Mapbox token if you don't have one).*
 
@@ -54,9 +55,25 @@ REACT_APP_MAPBOX_TOKEN=your_mapbox_token_here
 DATABASE_URL="postgresql://neondb_owner:[PASSWORD]@ep-autumn-violet-axsuxlkn-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require&pgbouncer=true&connect_timeout=15"
 DIRECT_URL="postgresql://neondb_owner:[PASSWORD]@ep-autumn-violet-axsuxlkn.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require"
 PORT=5000
-JWT_SECRET=tripchain_super_secret
+JWT_SECRET=replace_with_a_long_random_secret
+GOOGLE_CLIENT_ID=your_google_web_client_id
 ```
 *(Reach out to the repository owner to get the actual database passwords).*
+
+### Google Sign-In setup
+
+TripChain uses Google Identity Services with an OpenID Connect ID token. In Google
+Cloud Console, configure the OAuth consent screen, create an OAuth 2.0 **Web
+application** client, and add these authorized JavaScript origins:
+
+- `http://localhost:3000` for `npm start`
+- `http://localhost:8080` for Docker Compose
+- `https://tripchain-dusky.vercel.app` for the current deployed frontend
+
+Copy the same Web client ID to `frontend/.env` as `REACT_APP_GOOGLE_CLIENT_ID`
+and to `backend/.env` as `GOOGLE_CLIENT_ID`. No Google client secret is used by
+this ID-token flow. It does not require an authorized redirect URI because the
+credential is returned to the browser callback and verified by the backend.
 
 ---
 
@@ -70,6 +87,10 @@ The easiest way to spin up the entire stack locally is by using Docker Compose. 
 ```bash
 docker-compose up --build -d
 ```
+
+For Docker Compose, CRA variables must be available during image build. Put
+`REACT_APP_API_BASE` and `REACT_APP_GOOGLE_CLIENT_ID` in the repository-root
+`.env` (which is ignored), or invoke Compose with an appropriate `--env-file`.
 *(The `-d` flag runs the containers in the background).*
 
 **Accessing the Application:**
