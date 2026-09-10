@@ -15,9 +15,11 @@ TripChain is a user-centric travel tracker application with a modern, glassmorph
 - **PostgreSQL (NeonDB)**: A powerful relational database chosen for its strict data integrity and support for complex queries. We specifically host it on NeonDB to take advantage of its serverless scaling and connection pooling.
 - **Prisma ORM**: Used to interact with PostgreSQL. Prisma was selected because it provides auto-generated, type-safe queries and an incredibly intuitive schema configuration, which drastically speeds up development and prevents SQL injection vulnerabilities.
 
-### Infrastructure & Orchestration
-- **Docker & Docker Compose**: Used to containerize both the frontend and backend. This completely eliminates the "it works on my machine" problem by ensuring the application runs identically in any environment.
-- **Kubernetes (K8s)**: Integrated to prepare the application for production-grade scaling. Kubernetes allows for automated deployment, self-healing, and load balancing of our containerized services.
+### Infrastructure, Caching & Edge
+- **Redis & In-Memory Fallback Cache**: Integrated via `ioredis` for sub-millisecond response times. Caches user dashboard KPIs, weekly stats, and eco-score aggregations with automatic cache invalidation on trip modifications. Supports cloud Redis (like Upstash) with zero-config in-memory fallback for local development.
+- **Cloudflare Edge Gateway & CDN**: Supports edge caching of read-heavy REST endpoints, automatic CORS preflight handling, and edge security headers via a dedicated Cloudflare Worker (`cloudflare-worker/`).
+- **Docker & Docker Compose**: Used to containerize both the frontend and backend, ensuring consistent behavior across all environments.
+- **Kubernetes (K8s)**: Manifests provided for production-grade orchestrations, automated deployments, and load balancing.
 
 ---
 
@@ -57,8 +59,25 @@ DIRECT_URL="postgresql://neondb_owner:[PASSWORD]@ep-autumn-violet-axsuxlkn.c-4.u
 PORT=5000
 JWT_SECRET=replace_with_a_long_random_secret
 GOOGLE_CLIENT_ID=your_google_web_client_id
+
+# Login Security Alert Notifications
+ADMIN_NOTIFICATION_EMAIL=beingaryan5555@gmail.com
+GMAIL_USER=your_gmail@gmail.com
+GMAIL_APP_PASSWORD=your_16_digit_app_password
+
+# Redis Distributed Caching (Optional — automatically falls back to in-memory cache if omitted)
+REDIS_URL=rediss://default:your_password@your_endpoint.upstash.io:6379
 ```
 *(Reach out to the repository owner to get the actual database passwords).*
+
+---
+
+## ⚡ Caching, Edge Gateway & Setup Guides
+
+For detailed instructions on configuring performance and edge infrastructure, consult the setup guides in the `docs/` folder:
+
+- 📖 [**Redis Caching Setup Guide**](docs/REDIS_SETUP.md): Step-by-step instructions on setting up free serverless Redis with Upstash, caching dashboard aggregations, and automatic invalidation.
+- 🌐 [**Cloudflare Partial Integration Guide**](docs/CLOUDFLARE_SETUP.md): Instructions on enabling Cloudflare's free CDN proxy (Orange Cloud) for SSL/DDoS protection and deploying the Edge Gateway Worker (`cloudflare-worker/`).
 
 ### Google Sign-In setup
 
