@@ -1,0 +1,7 @@
+name = "tripchain-edge-gateway"
+main = "worker.js"
+compatibility_date = "2024-09-01"
+
+[vars]
+# Change this to your live production backend URL (e.g. Render, Railway, VPS, or tunnel)
+BACKEND_ORIGIN = "https://your-backend-domain.com"

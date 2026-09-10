@@ -24,9 +24,9 @@ const Navbar = () => {
     <>
       {/* TOP NAVBAR */}
       <motion.header 
-        className="navbar"
-        initial={{ y: -80, x: "-50%" }}
-        animate={{ y: 0, x: "-50%" }}
+        className={`navbar ${isAuthPage ? "navbar-auth" : ""}`}
+        initial={{ y: -80, x: isAuthPage && window.innerWidth <= 768 ? "0%" : "-50%" }}
+        animate={{ y: 0, x: isAuthPage && window.innerWidth <= 768 ? "0%" : "-50%" }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
       >
         <div className="navbar-left">

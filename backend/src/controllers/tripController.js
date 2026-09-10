@@ -2,6 +2,7 @@ import prisma from "../config/prisma.js";
 import { tripSchema } from "../validations/tripValidation.js";
 import { estimateTripMetrics, calculateTripRewards } from "../utils/metrics.js";
 import { checkAndAwardBadges } from "./achievementController.js";
+import { clearUserCache } from "../config/redis.js";
 import { Parser } from "json2csv";
 
 export const addTrip = async (req, res) => {
@@ -56,6 +57,11 @@ export const addTrip = async (req, res) => {
     } catch (badgeErr) {
       console.warn("Could not evaluate badges during trip creation:", badgeErr.message);
     }
+
+    // ⚡ Invalidate cached dashboard and eco-score for this user
+    clearUserCache(userId).catch((cacheErr) => {
+      console.warn("Could not clear user cache on trip creation:", cacheErr.message);
+    });
 
     res.status(201).json({
       success: true,

@@ -255,6 +255,15 @@
     border-radius: 20px;
     box-shadow: 3px 3px 0px #14213D;
   }
+
+  .navbar.navbar-auth {
+    position: relative !important;
+    top: 0 !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 14px auto 0 auto !important;
+    width: calc(100% - 24px) !important;
+  }
 }
 
 @media (max-width: 380px) {

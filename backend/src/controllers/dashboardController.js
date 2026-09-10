@@ -1,4 +1,5 @@
 import prisma from "../config/prisma.js";
+import { getCache, setCache } from "../config/redis.js";
 
 /**
  * Utility: Group trips by week number
@@ -16,6 +17,13 @@ function getWeekKey(date) {
 export const getWeeklyStats = async (req, res) => {
   try {
     const userId = req.userId;
+    const cacheKey = `cache:dashboard:weekly:${userId}`;
+
+    const cached = await getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const trips = await prisma.trip.findMany({ where: { userId } });
 
     const weeklyData = {};
@@ -31,11 +39,14 @@ export const getWeeklyStats = async (req, res) => {
 
     const data = Object.values(weeklyData).sort((a, b) => a.week.localeCompare(b.week));
 
-    res.status(200).json({
+    const responseData = {
       success: true,
       message: "Weekly stats fetched successfully",
       data,
-    });
+    };
+
+    await setCache(cacheKey, responseData, 300);
+    res.status(200).json(responseData);
   } catch (err) {
     console.error("Error fetching weekly stats:", err);
     res.status(500).json({ success: false, message: "Server error fetching weekly stats" });
@@ -49,6 +60,13 @@ export const getWeeklyStats = async (req, res) => {
 export const getModeShare = async (req, res) => {
   try {
     const userId = req.userId;
+    const cacheKey = `cache:dashboard:modes:${userId}`;
+
+    const cached = await getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const trips = await prisma.trip.findMany({ where: { userId } });
 
     if (!trips.length) {
@@ -63,28 +81,37 @@ export const getModeShare = async (req, res) => {
     const total = trips.length;
     const modeShare = Object.entries(modeCount).map(([mode, count]) => ({
       mode,
-      count,
-      percentage: ((count / total) * 100).toFixed(1),
+      percentage: Number(((count / total) * 100).toFixed(1)),
     }));
 
-    res.status(200).json({
+    const responseData = {
       success: true,
-      message: "Mode share calculated successfully",
+      message: "Mode share computed successfully",
       modeShare,
-    });
+    };
+
+    await setCache(cacheKey, responseData, 300);
+    res.status(200).json(responseData);
   } catch (err) {
-    console.error("Error fetching mode share:", err);
-    res.status(500).json({ success: false, message: "Server error fetching mode share" });
+    console.error("Error calculating mode share:", err);
+    res.status(500).json({ success: false, message: "Server error calculating mode share" });
   }
 };
 
 /**
  * GET /api/dashboard/impact-trends
- * Returns CO2 and cost trends by week
+ * Returns impact trends (weekly CO2 & cost)
  */
 export const getImpactTrends = async (req, res) => {
   try {
     const userId = req.userId;
+    const cacheKey = `cache:dashboard:impact:${userId}`;
+
+    const cached = await getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const trips = await prisma.trip.findMany({ where: { userId } });
 
     const weeklyImpact = {};
@@ -97,11 +124,14 @@ export const getImpactTrends = async (req, res) => {
 
     const data = Object.values(weeklyImpact).sort((a, b) => a.week.localeCompare(b.week));
 
-    res.status(200).json({
+    const responseData = {
       success: true,
       message: "Impact trends fetched successfully",
       data,
-    });
+    };
+
+    await setCache(cacheKey, responseData, 300);
+    res.status(200).json(responseData);
   } catch (err) {
     console.error("Error fetching impact trends:", err);
     res.status(500).json({ success: false, message: "Server error fetching impact trends" });
@@ -115,11 +145,20 @@ export const getImpactTrends = async (req, res) => {
 export const getDashboardOverview = async (req, res) => {
   try {
     const userId = req.userId;
+    const cacheKey = `cache:dashboard:overview:${userId}`;
+
+    const cached = await getCache(cacheKey);
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
     const trips = await prisma.trip.findMany({ where: { userId } });
     const badges = await prisma.userBadge.findMany({ where: { userId } });
 
-    if (!trips.length)
-      return res.status(200).json({ success: true, message: "No trips found", overview: {} });
+    if (!trips.length) {
+      const emptyData = { success: true, message: "No trips found", overview: {} };
+      return res.status(200).json(emptyData);
+    }
 
     const totalTrips = trips.length;
     const totalDistance = trips.reduce((s, t) => s + (t.distance || 0), 0);
@@ -149,11 +188,14 @@ export const getDashboardOverview = async (req, res) => {
       totalPoints,
     };
 
-    res.status(200).json({
+    const responseData = {
       success: true,
       message: "Dashboard overview ready",
       overview,
-    });
+    };
+
+    await setCache(cacheKey, responseData, 300);
+    res.status(200).json(responseData);
   } catch (err) {
     console.error("Error fetching dashboard overview:", err);
     res.status(500).json({ success: false, message: "Server error fetching dashboard overview" });

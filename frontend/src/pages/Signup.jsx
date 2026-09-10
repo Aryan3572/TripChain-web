@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/api";
 import GoogleAuthButton from "../components/GoogleAuthButton";
+import { validateEmailAddress } from "../utils/emailValidator";
 import { motion } from "framer-motion";
 import { UserPlus, User, Mail, Lock } from "lucide-react";
 
@@ -19,12 +20,24 @@ const Signup = () => {
     e.preventDefault();
     setMsg("");
     setIsError(false);
+
+    const emailCheck = validateEmailAddress(email);
+    if (!emailCheck.valid) {
+      setMsg(emailCheck.message);
+      setIsError(true);
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await apiRequest("/api/auth/register", "POST", { name, email, password });
+      await apiRequest("/api/auth/register", "POST", { 
+        name, 
+        email: emailCheck.normalizedEmail, 
+        password 
+      });
       setMascotState("happy");
-      setMsg("Account created! Redirecting...");
+      setMsg("Account created! Redirecting to login...");
       setTimeout(() => navigate("/login"), 1200);
     } catch (err) {
       setMsg(err.message || "Signup failed");
@@ -63,7 +76,7 @@ const Signup = () => {
       transition={{ duration: 0.5 }}
       style={{ maxWidth: "1000px" }}
     >
-      <div className="auth-info">
+      <div className="auth-info desktop-auth-info">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -144,51 +157,72 @@ const Signup = () => {
         transition={{ delay: 0.2 }}
         style={{ flex: 1, padding: "clamp(24px, 4vw, 44px) clamp(16px, 4vw, 36px)", display: "flex", flexDirection: "column", justifyContent: "center", background: "#FFFFFF", borderRadius: "clamp(18px, 3vw, 24px)", border: "3px solid #14213D", boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D", width: "100%", boxSizing: "border-box" }}
       >
+        {/* Mobile Mascot Buddy Header */}
+        <div className="mobile-mascot-header">
+          <motion.img
+            src="/mascot.png"
+            alt="Tripchain Mascot"
+            className="mobile-mascot-avatar"
+            animate={{
+              scale: mascotState === "happy" ? [1, 1.15, 1] : mascotState === "focused" ? 1.08 : 1,
+            }}
+            transition={{ type: "spring", bounce: 0.5 }}
+          />
+          <div className="mobile-mascot-bubble">
+            <span className="mobile-bubble-title">Let's explore! 🌿</span>
+            <span className="mobile-bubble-desc">Create your account and earn rewards.</span>
+          </div>
+        </div>
+
         <h1 className="auth-title" style={{ fontSize: "clamp(1.6rem, 4vw, 2.2rem)", marginBottom: "8px", color: "#14213D" }}>Create your account</h1>
         <p className="auth-subtitle" style={{ color: "var(--text-muted)", marginBottom: "24px", fontSize: "clamp(0.95rem, 2vw, 1.05rem)" }}>Join Tripchain and start tracking your journeys.</p>
 
-          <GoogleAuthButton
-            label="Sign up with Google"
-            disabled={loading}
-            onCredential={handleGoogleSignup}
-            onError={(message) => setMsg(message)}
-          />
-          <div className="auth-divider"><span>OR</span></div>
+        <GoogleAuthButton
+          label="Sign up with Google"
+          disabled={loading}
+          onCredential={handleGoogleSignup}
+          onError={(message) => setMsg(message)}
+        />
+        <div className="auth-divider"><span>OR</span></div>
 
-          <form className="auth-form" onSubmit={handleSignup} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <label style={{ display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
-              Full name
-              <div style={{ position: "relative" }}>
-                <User size={20} color="var(--text-muted)" style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", zIndex: 1 }} />
-                <input
-                  type="text"
-                  required
-                  placeholder="Full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  style={{ width: "100%", padding: "16px 16px 16px 48px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)" }}
-                  onFocus={(e) => { e.target.style.borderColor = "#10B981"; e.target.style.background = "#FFFFFF"; setMascotState("focused"); }}
-                  onBlur={(e) => { e.target.style.borderColor = "#14213D"; e.target.style.background = "#F8FAFC"; setMascotState("normal"); }}
-                />
-              </div>
-            </label>
+        <form className="auth-form" onSubmit={handleSignup} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <label style={{ display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
+            Full name
+            <div style={{ position: "relative" }}>
+              <User size={20} color="var(--text-muted)" style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", zIndex: 1 }} />
+              <input
+                type="text"
+                required
+                placeholder="Full name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                style={{ width: "100%", padding: "16px 16px 16px 48px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)" }}
+                onFocus={(e) => { e.target.style.borderColor = "#10B981"; e.target.style.background = "#FFFFFF"; setMascotState("focused"); }}
+                onBlur={(e) => { e.target.style.borderColor = "#14213D"; e.target.style.background = "#F8FAFC"; setMascotState("normal"); }}
+              />
+            </div>
+          </label>
 
-            <label style={{ display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
-              Email
-              <div style={{ position: "relative" }}>
-                <Mail size={20} color="var(--text-muted)" style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", zIndex: 1 }} />
-                <input
-                  type="email"
-                  required
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  style={{ width: "100%", padding: "16px 16px 16px 48px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)" }}
-                  onFocus={(e) => { e.target.style.borderColor = "#10B981"; e.target.style.background = "#FFFFFF"; setMascotState("focused"); }}
-                  onBlur={(e) => { e.target.style.borderColor = "#14213D"; e.target.style.background = "#F8FAFC"; setMascotState("normal"); }}
-                />
-              </div>
-            </label>
+          <label style={{ display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
+            Email
+            <div style={{ position: "relative" }}>
+              <Mail size={20} color="var(--text-muted)" style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", zIndex: 1 }} />
+              <input
+                type="email"
+                required
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck="false"
+                autoComplete="email"
+                placeholder="your@domain.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{ width: "100%", padding: "16px 16px 16px 48px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)" }}
+                onFocus={(e) => { e.target.style.borderColor = "#10B981"; e.target.style.background = "#FFFFFF"; setMascotState("focused"); }}
+                onBlur={(e) => { e.target.style.borderColor = "#14213D"; e.target.style.background = "#F8FAFC"; setMascotState("normal"); }}
+              />
+            </div>
+          </label>
 
             <label style={{ display: "flex", flexDirection: "column", gap: "8px", fontWeight: "bold", color: "#14213D", fontSize: "15px" }}>
               Password

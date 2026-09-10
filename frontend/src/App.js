@@ -42,6 +42,33 @@ function MobileRedirectWrapper({ children }) {
   return children;
 }
 
+function MainLayout() {
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
+
+  return (
+    <MobileRedirectWrapper>
+      <FloatingElements />
+      <Navbar />
+
+      <div className={`app-container ${isAuthPage ? "app-container-auth" : ""}`}>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/planner" element={<RoutePlanner />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/add-trip" element={<AddTrip />} />
+          <Route path="/achievements" element={<Achievements />} />
+          <Route path="/profile" element={<Profile />} />
+
+          {/* Auth */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+      </div>
+    </MobileRedirectWrapper>
+  );
+}
+
 function App() {
   useEffect(() => {
     initThemeEngine();
@@ -49,25 +76,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <MobileRedirectWrapper>
-        <FloatingElements />
-        <Navbar />
-
-        <div className="app-container">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/planner" element={<RoutePlanner />} />
-            <Route path="/insights" element={<Insights />} />
-            <Route path="/add-trip" element={<AddTrip />} />
-            <Route path="/achievements" element={<Achievements />} />
-            <Route path="/profile" element={<Profile />} />
-
-            {/* Auth */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-          </Routes>
-        </div>
-      </MobileRedirectWrapper>
+      <MainLayout />
     </BrowserRouter>
   );
 }

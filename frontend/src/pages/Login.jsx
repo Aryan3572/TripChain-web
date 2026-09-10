@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { apiRequest } from "../api/api";
 import GoogleAuthButton from "../components/GoogleAuthButton";
+import { validateEmailAddress } from "../utils/emailValidator";
 import { motion } from "framer-motion";
 import { LogIn, Mail, Lock } from "lucide-react";
 
@@ -16,17 +17,24 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMsg("");
+
+    const emailCheck = validateEmailAddress(email);
+    if (!emailCheck.valid) {
+      setErrorMsg(emailCheck.message);
+      return;
+    }
+
     setLoading(true);
 
     try {
       const data = await apiRequest("/api/auth/login", "POST", {
-        email,
+        email: emailCheck.normalizedEmail,
         password,
       });
 
       setMascotState("happy");
       localStorage.setItem("tripchain_token", data.token);
-      localStorage.setItem("tripchain_userEmail", email);
+      localStorage.setItem("tripchain_userEmail", emailCheck.normalizedEmail);
       setTimeout(() => navigate("/"), 800);
     } catch (err) {
       setErrorMsg(err.message || "Login failed");
@@ -62,7 +70,7 @@ const Login = () => {
       transition={{ duration: 0.5 }}
       style={{ maxWidth: "1000px" }}
     >
-      <div className="auth-info">
+      <div className="auth-info desktop-auth-info">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -143,6 +151,23 @@ const Login = () => {
         transition={{ delay: 0.2 }}
         style={{ flex: 1, padding: "clamp(24px, 4vw, 44px) clamp(16px, 4vw, 36px)", display: "flex", flexDirection: "column", justifyContent: "center", background: "#FFFFFF", borderRadius: "clamp(18px, 3vw, 24px)", border: "3px solid #14213D", boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D", width: "100%", boxSizing: "border-box" }}
       >
+        {/* Mobile Mascot Buddy Header */}
+        <div className="mobile-mascot-header">
+          <motion.img
+            src="/mascot.png"
+            alt="Tripchain Mascot"
+            className="mobile-mascot-avatar"
+            animate={{
+              scale: mascotState === "happy" ? [1, 1.15, 1] : mascotState === "focused" ? 1.08 : 1,
+            }}
+            transition={{ type: "spring", bounce: 0.5 }}
+          />
+          <div className="mobile-mascot-bubble">
+            <span className="mobile-bubble-title">Welcome back! 👋</span>
+            <span className="mobile-bubble-desc">Log in to track your eco journeys!</span>
+          </div>
+        </div>
+
         <h1 className="auth-title" style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)", marginBottom: "8px", color: "#14213D" }}>Welcome back <span>!!</span></h1>
         <p className="auth-subtitle" style={{ color: "var(--text-muted)", marginBottom: "30px", fontSize: "1.1rem" }}>Log in to your Web3 travel dashboard</p>
 
@@ -162,7 +187,11 @@ const Login = () => {
               <input
                 type="email"
                 required
-                placeholder="you@example.com"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck="false"
+                autoComplete="email"
+                placeholder="you@domain.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={{ width: "100%", padding: "16px 16px 16px 48px", borderRadius: "16px", border: "3px solid #14213D", background: "#F8FAFC", fontSize: "16px", outline: "none", transition: "all 0.2s", boxShadow: "inset 0px 4px 0px rgba(0,0,0,0.04)" }}

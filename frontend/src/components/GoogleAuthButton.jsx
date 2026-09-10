@@ -12,6 +12,9 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
     const renderButton = () => {
       if (cancelled || !buttonRef.current || !window.google?.accounts?.id) return;
 
+      const containerWidth = buttonRef.current?.parentElement?.clientWidth || buttonRef.current?.clientWidth || 340;
+      const targetWidth = Math.min(380, Math.max(200, Math.floor(containerWidth)));
+
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: ({ credential }) => {
@@ -25,9 +28,11 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
         size: "large",
         text: label === "Sign up with Google" ? "signup_with" : "continue_with",
         shape: "rectangular",
-        width: 360,
+        width: targetWidth,
       });
     };
+
+    window.addEventListener("resize", renderButton);
 
     const existingScript = document.getElementById("google-identity-services");
     if (existingScript) {
@@ -35,6 +40,7 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
       else existingScript.addEventListener("load", renderButton, { once: true });
       return () => {
         cancelled = true;
+        window.removeEventListener("resize", renderButton);
         existingScript.removeEventListener("load", renderButton);
       };
     }

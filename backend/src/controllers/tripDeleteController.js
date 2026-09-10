@@ -1,4 +1,5 @@
 import prisma from "../config/prisma.js";
+import { clearUserCache } from "../config/redis.js";
 
 /**
  * DELETE /api/trips/all
@@ -10,6 +11,11 @@ export const deleteAllTrips = async (req, res) => {
 
     const deleted = await prisma.trip.deleteMany({
       where: { userId },
+    });
+
+    // ⚡ Invalidate cached dashboard and eco-score for this user
+    clearUserCache(userId).catch((cacheErr) => {
+      console.warn("Could not clear user cache on trip deletion:", cacheErr.message);
     });
 
     res.status(200).json({

@@ -25,9 +25,14 @@ input, button, textarea, select {
   font-family: inherit;
 }
 
-input:not([type="password"]), textarea {
+input:not([type="password"]):not([type="email"]), textarea {
   text-transform: uppercase;
   font-weight: bold;
+}
+
+input[type="email"] {
+  text-transform: lowercase;
+  font-weight: 500;
 }
 
 html, body {
