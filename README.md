@@ -98,7 +98,7 @@ credential is returned to the browser callback and verified by the backend.
 
 ## 🐳 Running with Docker Compose (Recommended for Local Dev)
 
-The easiest way to spin up the entire stack locally is by using Docker Compose. This will automatically build the images, link the frontend and backend, and expose the correct ports.
+The easiest way to spin up the entire stack locally is by using Docker Compose. This automatically builds the images, provisions a local Redis caching container, links the frontend and backend with health checks, and exposes the correct ports.
 
 1. Ensure Docker Desktop is running.
 2. Open a terminal in the root directory of the project.
@@ -107,14 +107,13 @@ The easiest way to spin up the entire stack locally is by using Docker Compose. 
 docker-compose up --build -d
 ```
 
-For Docker Compose, CRA variables must be available during image build. Put
-`REACT_APP_API_BASE` and `REACT_APP_GOOGLE_CLIENT_ID` in the repository-root
-`.env` (which is ignored), or invoke Compose with an appropriate `--env-file`.
+For Docker Compose, CRA variables must be available during image build. Put `REACT_APP_API_BASE`, `REACT_APP_GOOGLE_CLIENT_ID`, and `REACT_APP_MAPBOX_TOKEN` in the repository-root `.env` (copy from `.env.example`), or invoke Compose with `--env-file frontend/.env`.
 *(The `-d` flag runs the containers in the background).*
 
-**Accessing the Application:**
+**Services & Ports:**
 - **Frontend**: `http://localhost:8080`
-- **Backend API**: `http://localhost:5000`
+- **Backend API & Health**: `http://localhost:5000` (Health check at `/health`)
+- **Redis Cache**: `localhost:6379` (Internal service `redis:6379`)
 
 To stop the containers when you are done working:
 ```bash

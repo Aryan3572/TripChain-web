@@ -8,11 +8,12 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+# Copy Prisma schema and generate client
+COPY prisma ./prisma/
+RUN npm run prisma:generate
+
 # Copy project files
 COPY . .
-
-# Generate Prisma Client
-RUN npm run prisma:generate
 
 # Expose backend port
 EXPOSE 5000

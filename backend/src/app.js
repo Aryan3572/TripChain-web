@@ -27,6 +27,7 @@ app.use(cors({
 app.use(express.json());
 
 app.get("/", (req, res) => res.json({ message: "🚀 Tripchain API is live!" }));
+app.get("/health", (req, res) => res.status(200).json({ status: "ok", uptime: process.uptime() }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/trips", tripRoutes);

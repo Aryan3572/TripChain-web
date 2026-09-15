@@ -21,7 +21,7 @@ const FloatingElements = ({ themeColor = "#3A86FF" }) => {
       const id = Date.now() + Math.random();
       const rand = Math.random();
       const type = rand < 0.2 ? 'plane' : rand < 0.6 ? 'cloud' : 'leaf';
-      const size = Math.random() * 40 + 30;
+      const size = Math.random() * 40 + 46;
 
       const newElement = {
         id,
@@ -48,10 +48,10 @@ const FloatingElements = ({ themeColor = "#3A86FF" }) => {
   }, []);
 
   const elements = React.useMemo(() => {
-    return Array.from({ length: 15 }).map((_, i) => {
+    return Array.from({ length: 16 }).map((_, i) => {
       const isCloud = i % 2 === 0;
       const isPlane = i % 5 === 0;
-      const size = Math.random() * 40 + 30;
+      const size = Math.random() * 40 + 46;
       const duration = Math.random() * 25 + 15;
       const delay = Math.random() * -20; // negative delay so they start already on screen
       const startY = Math.random() * 90;
@@ -62,9 +62,15 @@ const FloatingElements = ({ themeColor = "#3A86FF" }) => {
           initial={{ x: "-15vw", y: `${startY}vh` }}
           animate={{ x: "110vw", y: `${startY + (Math.random() * 20 - 10)}vh` }}
           transition={{ duration, delay, repeat: Infinity, ease: "linear" }}
-          style={{ position: "absolute", zIndex: 0, opacity: Math.random() * 0.4 + 0.1 }}
+          style={{ position: "absolute", zIndex: 0, opacity: Math.random() * 0.25 + 0.35 }}
         >
-          {isPlane ? <Plane size={size} color={themeColor} /> : (isCloud ? <Cloud size={size * 1.5} color={themeColor} /> : <Leaf size={size * 0.8} color="#FFBE0B" />)}
+          {isPlane ? (
+            <Plane size={size} color={themeColor} fill={themeColor} />
+          ) : isCloud ? (
+            <Cloud size={size * 1.4} color={themeColor} fill={themeColor} />
+          ) : (
+            <Leaf size={size * 0.9} color="#FFBE0B" fill="#FFBE0B" />
+          )}
         </motion.div>
       );
     });
@@ -79,7 +85,7 @@ const FloatingElements = ({ themeColor = "#3A86FF" }) => {
           <motion.div
             key={el.id}
             initial={{ scale: 0, opacity: 0, x: 0, y: 0, rotate: -20 }}
-            animate={{ scale: 1, opacity: Math.random() * 0.5 + 0.4, x: "100vw", y: (Math.random() * -300) - 100, rotate: 10 }}
+            animate={{ scale: 1, opacity: Math.random() * 0.3 + 0.6, x: "100vw", y: (Math.random() * -300) - 100, rotate: 10 }}
             exit={{ opacity: 0, scale: 0 }}
             transition={{ 
               duration: 12, 
@@ -92,13 +98,17 @@ const FloatingElements = ({ themeColor = "#3A86FF" }) => {
               position: "absolute", 
               left: el.x, 
               top: el.y, 
-              zIndex: 1,
+              zIndex: 0,
               transform: "translate(-50%, -50%)"
             }}
           >
-            {el.type === 'plane' ? <Plane size={el.size} color={themeColor} /> : 
-             el.type === 'cloud' ? <Cloud size={el.size * 1.5} color={themeColor} /> : 
-             <Leaf size={el.size * 0.8} color="#FFBE0B" />}
+            {el.type === 'plane' ? (
+              <Plane size={el.size} color={themeColor} fill={themeColor} />
+            ) : el.type === 'cloud' ? (
+              <Cloud size={el.size * 1.4} color={themeColor} fill={themeColor} />
+            ) : (
+              <Leaf size={el.size * 0.9} color="#FFBE0B" fill="#FFBE0B" />
+            )}
           </motion.div>
         ))}
       </AnimatePresence>

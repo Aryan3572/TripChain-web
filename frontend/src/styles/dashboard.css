@@ -1,4 +1,6 @@
 .page-wrapper {
+  position: relative;
+  z-index: 1;
   padding: clamp(10px, 3vw, 24px) clamp(8px, 2.5vw, 20px) 40px;
   max-width: 1200px;
   margin: 0 auto;
@@ -13,6 +15,8 @@
 }
 
 .page-header {
+  position: relative;
+  z-index: 2;
   margin-bottom: clamp(24px, 4vw, 40px);
   text-align: left;
 }
@@ -97,83 +101,520 @@
 }
 
 .section-card {
-  padding: 32px;
-  margin-bottom: 30px;
+  padding: clamp(20px, 3.5vw, 32px);
+  background: var(--glass-bg);
+  border: var(--cartoon-border);
+  box-shadow: var(--cartoon-shadow);
+  border-radius: 24px;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.section-card h3 {
-  font-size: 1.8rem;
-  margin-bottom: 24px;
-  color: var(--text-main);
-}
-
-.recent-trips {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.trip-card {
+/* SECTION HEADER */
+.section-header-flex {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 28px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  border: var(--cartoon-border);
-  box-shadow: var(--cartoon-shadow);
-  transition: all 0.2s ease;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: clamp(18px, 3vw, 26px);
+  padding-bottom: 14px;
+  border-bottom: 2px dashed rgba(20, 33, 61, 0.15);
+  position: relative;
+  z-index: 3;
+}
+
+.section-kicker {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.section-title {
+  font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 3;
+}
+
+.section-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.count-pill {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  background: #F8FAFC;
+  border: 2px solid #14213D;
+  border-radius: 12px;
+  box-shadow: 2px 2px 0px #14213D;
+  color: var(--text-main);
+}
+
+.neo-btn-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 2px solid #14213D;
+  background: var(--primary);
+  color: #14213D;
+  box-shadow: 3px 3px 0px #14213D;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.trip-card:hover {
-  background: #F1F1F1;
-  transform: translateY(-4px);
-  box-shadow: var(--cartoon-shadow-hover);
+.neo-btn-sm:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #14213D;
+  background: #FFD000;
 }
 
-.trip-header {
+.neo-btn-sm:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #14213D;
+}
+
+/* EMPTY STATE - EXPEDITION CARD */
+.empty-expedition-card {
+  background: radial-gradient(circle at center, #FFFDF5 0%, #FFF8E7 100%);
+  border: 2.5px dashed #14213D;
+  border-radius: 20px;
+  padding: clamp(28px, 5vw, 44px) clamp(16px, 4vw, 32px);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.empty-art-orbit {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.orbit-center-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: #FFFFFF;
+  border: 3px solid #14213D;
+  box-shadow: 4px 4px 0px #14213D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-3deg);
+  transition: transform 0.3s ease;
+}
+
+.empty-expedition-card:hover .orbit-center-icon {
+  transform: rotate(3deg) scale(1.05);
+}
+
+.floating-badge {
+  position: absolute;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 2px solid #14213D;
+  box-shadow: 2px 2px 0px #14213D;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  animation: float-badge 3s ease-in-out infinite;
+}
+
+.badge-top-right {
+  top: -6px;
+  right: -24px;
+  background: #D1FAE5;
+  color: #065F46;
+  animation-delay: 0s;
+}
+
+.badge-bottom-left {
+  bottom: -4px;
+  left: -28px;
+  background: #FEF3C7;
+  color: #B45309;
+  animation-delay: 1.5s;
+}
+
+@keyframes float-badge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.empty-expedition-card h4 {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 8px 0;
+}
+
+.empty-expedition-card p {
+  max-width: 520px;
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.empty-cta-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.neo-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--primary);
+  border: 3px solid #14213D;
+  border-radius: 14px;
+  box-shadow: 4px 4px 0px #14213D;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #14213D;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.neo-cta-primary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #14213D;
+  background: #FFD000;
+}
+
+.neo-cta-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #14213D;
+}
+
+.neo-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #FFFFFF;
+  border: 3px solid #14213D;
+  border-radius: 14px;
+  box-shadow: 4px 4px 0px #14213D;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #14213D;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.neo-cta-secondary:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #14213D;
+  background: #F8FAFC;
+}
+
+/* RECENT TRIPS LIST */
+.recent-trips-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.trip-ticket-card {
+  background: #FFFFFF;
+  border: 3px solid #14213D;
+  border-radius: 18px;
+  box-shadow: 4px 4px 0px #14213D;
+  padding: clamp(14px, 2.5vw, 18px) clamp(14px, 3vw, 22px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.trip-ticket-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0px #14213D;
+  border-color: #3A86FF;
+}
+
+.trip-ticket-card.is-eco:hover {
+  border-color: #10B981;
+}
+
+.trip-ticket-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+.trip-mode-squircle {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 2.5px 2.5px 0px #14213D;
+  transition: transform 0.2s ease;
+}
+
+.trip-ticket-card:hover .trip-mode-squircle {
+  transform: rotate(-6deg) scale(1.08);
+}
+
+.trip-route-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.trip-route-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  font-weight: 800;
+  color: var(--text-main);
+  flex-wrap: wrap;
+}
+
+.trip-path-point {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.trip-path-arrow {
+  color: #3A86FF;
+  display: inline-flex;
+  align-items: center;
+}
+
+.trip-chips-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.trip-stat-chip {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: #F1F5F9;
+  border: 1.5px solid #CBD5E1;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.trip-stat-chip.eco-pill {
+  background: #D1FAE5;
+  border-color: #10B981;
+  color: #065F46;
+  font-weight: 800;
+}
+
+.trip-stat-chip.points-pill {
+  background: #FEF3C7;
+  border-color: #F59E0B;
+  color: #B45309;
+  font-weight: 800;
+}
+
+.trip-stat-chip.route-type-pill {
+  background: #DBEAFE;
+  border-color: #3B82F6;
+  color: #1E40AF;
+  font-weight: 800;
+}
+
+.trip-ticket-right {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 1.25rem;
+  flex-shrink: 0;
 }
 
-.trip-header strong {
-  color: var(--text-main);
-  font-weight: 700;
-}
-
-.trip-meta {
-  color: var(--text-muted);
-  font-size: 1rem;
-  margin: 0;
-}
-
-.notifications-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.notif-pill {
-  padding: 18px 24px;
-  border-radius: 16px;
-  background: #FFFFFF;
-  border: var(--cartoon-border);
-  box-shadow: 2px 2px 0px #14213D;
-  font-size: 1.05rem;
+.view-details-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #F8FAFC;
+  border: 2px solid #14213D;
   display: flex;
   align-items: center;
-  transition: transform 0.2s;
-}
-.notif-pill:hover {
-  transform: translateX(4px);
+  justify-content: center;
+  color: #14213D;
+  box-shadow: 2px 2px 0px #14213D;
+  transition: all 0.2s ease;
 }
 
-.notif-info { border-left: 4px solid #3b82f6; }
-.notif-warning { border-left: 4px solid #f59e0b; }
-.notif-success { border-left: 4px solid #10b981; }
+.trip-ticket-card:hover .view-details-arrow {
+  background: var(--primary);
+  transform: translateX(3px);
+}
+
+/* RADAR INTELLIGENCE GRID */
+.radar-live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #DCFCE7;
+  border: 2px solid #16A34A;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #15803D;
+  letter-spacing: 0.5px;
+}
+
+.radar-beacon-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #16A34A;
+  box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+  animation: beacon-pulse 1.8s infinite;
+}
+
+@keyframes beacon-pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+}
+
+.radar-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+}
+
+.radar-smart-card {
+  border-radius: 18px;
+  border: 3px solid #14213D;
+  box-shadow: 4px 4px 0px #14213D;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.radar-smart-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0px #14213D;
+}
+
+.radar-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.radar-category-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1.5px solid #14213D;
+  box-shadow: 2px 2px 0px #14213D;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.radar-card-body {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.45;
+}
+
+.radar-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1.5px dashed rgba(20, 33, 61, 0.12);
+}
+
+.radar-action-link {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #14213D;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: gap 0.2s ease;
+}
+
+.radar-smart-card:hover .radar-action-link {
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .trip-ticket-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .trip-ticket-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .trip-path-point {
+    max-width: 100%;
+  }
+}
+
