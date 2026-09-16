@@ -5,6 +5,12 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const buttonRef = useRef(null);
 
+  const callbacksRef = useRef({ onCredential, onError });
+
+  useEffect(() => {
+    callbacksRef.current = { onCredential, onError };
+  }, [onCredential, onError]);
+
   useEffect(() => {
     if (!clientId || disabled) return undefined;
 
@@ -18,8 +24,8 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: ({ credential }) => {
-          if (credential) onCredential(credential);
-          else onError("Google did not return a credential. Please try again.");
+          if (credential) callbacksRef.current.onCredential?.(credential);
+          else callbacksRef.current.onError?.("Google did not return a credential. Please try again.");
         },
       });
       buttonRef.current.replaceChildren();
@@ -32,7 +38,26 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
       });
     };
 
-    window.addEventListener("resize", renderButton);
+    let resizeTimer = null;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (!cancelled && buttonRef.current && window.google?.accounts?.id) {
+          const containerWidth = buttonRef.current?.parentElement?.clientWidth || buttonRef.current?.clientWidth || 340;
+          const targetWidth = Math.min(380, Math.max(200, Math.floor(containerWidth)));
+          buttonRef.current.replaceChildren();
+          window.google.accounts.id.renderButton(buttonRef.current, {
+            theme: "outline",
+            size: "large",
+            text: label === "Sign up with Google" ? "signup_with" : "continue_with",
+            shape: "rectangular",
+            width: targetWidth,
+          });
+        }
+      }, 150);
+    };
+
+    window.addEventListener("resize", handleResize);
 
     const existingScript = document.getElementById("google-identity-services");
     if (existingScript) {
@@ -40,7 +65,8 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
       else existingScript.addEventListener("load", renderButton, { once: true });
       return () => {
         cancelled = true;
-        window.removeEventListener("resize", renderButton);
+        clearTimeout(resizeTimer);
+        window.removeEventListener("resize", handleResize);
         existingScript.removeEventListener("load", renderButton);
       };
     }
@@ -51,14 +77,16 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
     script.async = true;
     script.defer = true;
     script.onload = renderButton;
-    script.onerror = () => onError("Google sign-in could not be loaded. Please try again.");
+    script.onerror = () => callbacksRef.current.onError?.("Google sign-in could not be loaded. Please try again.");
     document.head.appendChild(script);
 
     return () => {
       cancelled = true;
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", handleResize);
       script.removeEventListener("load", renderButton);
     };
-  }, [clientId, disabled, label, onCredential, onError]);
+  }, [clientId, disabled, label]);
 
   if (!clientId) {
     return (

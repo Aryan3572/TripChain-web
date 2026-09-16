@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   MapPin, Navigation, Zap, Leaf, AlertCircle, 
-  Car, Bike, Footprints, Bus, Train, Users, CheckCircle2, Sparkles
+  Car, Bike, Footprints, Bus, Train, Users, CheckCircle2, Sparkles, Compass, Play
 } from "lucide-react";
 import mapboxgl from "mapbox-gl";
 import mbxDirections from "@mapbox/mapbox-sdk/services/directions";
@@ -30,6 +31,7 @@ const MODE_CO2_RATES = {
 };
 
 function RoutePlanner() {
+  const navigate = useNavigate();
   const mapRef = useRef(null);
   const containerRef = useRef(null);
   const mapLoaded = useRef(false);
@@ -365,6 +367,33 @@ function RoutePlanner() {
     }
   }
 
+  // START LIVE JOURNEY
+  function startLiveJourney() {
+    const isEco = selectedRouteType === "eco";
+    const activeRoute = isEco ? ecoInfo : routeInfo;
+    if (!activeRoute) return;
+
+    let mappedMode = "car";
+    if (mode === "cycling") mappedMode = "bike";
+    if (mode === "walking") mappedMode = "walk";
+    if (mode === "transit") mappedMode = "transit";
+    if (mode === "train") mappedMode = "train";
+    if (mode === "carpool") mappedMode = "carpool";
+
+    navigate("/track", {
+      state: {
+        from: "My Location",
+        to: destination,
+        mode: mappedMode,
+        plannedDistance: Number(activeRoute.km),
+        plannedDuration: Number(activeRoute.min),
+        routeType: selectedRouteType,
+        geometry: activeRoute.geometry,
+        co2Saved: isEco ? Number(ecoInfo?.co2Saved || 0) : 0,
+      },
+    });
+  }
+
   // ANIMATION VARS
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -601,38 +630,69 @@ function RoutePlanner() {
           )}
         </AnimatePresence>
 
-        {/* SAVE BUTTON */}
+        {/* ACTION BUTTONS: LIVE TRACKING & QUICK LOG */}
         {routeInfo && (
-          <motion.button 
-            initial={{opacity: 0, y: 20}} animate={{opacity: 1, y: 0}}
-            whileHover={{ y: -4 }} whileTap={{ y: 2 }}
-            disabled={savingTrip}
-            onClick={saveTrip} 
-            style={{
-              marginTop: "24px", 
-              width: "100%", 
-              display: "flex", 
-              justifyContent: "center", 
-              alignItems: "center", 
-              gap: "10px", 
-              padding: "16px", 
-              fontSize: "1.2rem", 
-              fontWeight: "bold", 
-              borderRadius: "16px", 
-              background: isEcoSelected ? "#10B981" : "#3A86FF", 
-              color: "#FFFFFF", 
-              border: "3px solid #14213D", 
-              boxShadow: "4px 4px 0px #14213D",
-              cursor: "pointer",
-            }}
-          >
-            {isEcoSelected ? <Leaf size={22} /> : <Zap size={22} />}
-            {savingTrip 
-              ? "Saving & Calculating Rewards..." 
-              : isEcoSelected 
-                ? "Save Eco Trip (+50 Points)" 
-                : "Save Fastest Trip (+10 Points)"}
-          </motion.button>
+          <div style={{ marginTop: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
+            {/* Primary Action: Start Live Tracking */}
+            <motion.button 
+              initial={{opacity: 0, y: 20}} animate={{opacity: 1, y: 0}}
+              whileHover={{ y: -4, scale: 1.01 }} whileTap={{ y: 2 }}
+              onClick={startLiveJourney} 
+              style={{
+                width: "100%", 
+                display: "flex", 
+                justifyContent: "center", 
+                alignItems: "center", 
+                gap: "12px", 
+                padding: "16px", 
+                fontSize: "1.2rem", 
+                fontWeight: "900", 
+                borderRadius: "16px", 
+                background: "#00F5D4", 
+                color: "#14213D", 
+                border: "3.5px solid #14213D", 
+                boxShadow: "5px 5px 0px #14213D",
+                cursor: "pointer",
+              }}
+            >
+              <Compass size={24} strokeWidth={2.5} />
+              Start Live GPS Tracking
+              <span style={{ fontSize: "11px", background: "#14213D", color: "#00F5D4", padding: "2px 8px", borderRadius: "8px", fontWeight: "800" }}>
+                BATTERY-GUARD
+              </span>
+            </motion.button>
+
+            {/* Secondary Action: Quick Save */}
+            <motion.button 
+              initial={{opacity: 0, y: 20}} animate={{opacity: 1, y: 0}}
+              whileHover={{ y: -2 }} whileTap={{ y: 2 }}
+              disabled={savingTrip}
+              onClick={saveTrip} 
+              style={{
+                width: "100%", 
+                display: "flex", 
+                justifyContent: "center", 
+                alignItems: "center", 
+                gap: "8px", 
+                padding: "12px", 
+                fontSize: "1rem", 
+                fontWeight: "800", 
+                borderRadius: "14px", 
+                background: "#FFFFFF", 
+                color: "#14213D", 
+                border: "2.5px solid #14213D", 
+                boxShadow: "2px 2px 0px #14213D",
+                cursor: "pointer",
+              }}
+            >
+              {isEcoSelected ? <Leaf size={18} color="#059669" /> : <Zap size={18} color="#3A86FF" />}
+              {savingTrip 
+                ? "Saving..." 
+                : isEcoSelected 
+                  ? "Quick Log Eco Trip (+50 Points)" 
+                  : "Quick Log Fastest Trip (+10 Points)"}
+            </motion.button>
+          </div>
         )}
       </motion.div>
 

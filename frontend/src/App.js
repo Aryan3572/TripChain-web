@@ -13,6 +13,8 @@ import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import Achievements from "./pages/Achievements";
 import AddTrip from "./pages/AddTrip";
+import LiveTracker from "./pages/LiveTracker";
+import ActiveTripBanner from "./components/ActiveTripBanner";
 
 import "./styles/animations.css";
 import "./theme/light.css";
@@ -50,11 +52,13 @@ function MainLayout() {
     <MobileRedirectWrapper>
       <FloatingElements />
       <Navbar />
+      <ActiveTripBanner />
 
       <div className={`app-container ${isAuthPage ? "app-container-auth" : ""}`}>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/planner" element={<RoutePlanner />} />
+          <Route path="/track" element={<LiveTracker />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/add-trip" element={<AddTrip />} />
           <Route path="/achievements" element={<Achievements />} />

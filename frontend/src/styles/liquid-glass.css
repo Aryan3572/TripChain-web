@@ -1,0 +1,189 @@
+/* ============================================================
+   LIQUID GLASS MATERIAL SYSTEM FOR TRIPCHAIN
+   Layer 3 Functional Floating UI Material Language
+============================================================== */
+
+:root {
+  /* Tripchain Brand Neutral & Ink Tokens */
+  --lg-brand-surface: #FFFFFF;
+  --lg-brand-surface-dark: #14213D;
+  --lg-brand-ink: #14213D;
+  --lg-brand-ink-muted: #4A4E69;
+  --lg-brand-accent: #00F5D4;
+  --lg-brand-gold: #FFBE0B;
+
+  /* Material Tier: Thin (Pills, compact chips, secondary controls) */
+  --lg-thin-fill: rgba(255, 255, 255, 0.52);
+  --lg-thin-solid: #F8FAFC;
+  --lg-thin-blur: 16px;
+  --lg-thin-saturation: 130%;
+  --lg-thin-edge: rgba(20, 33, 61, 0.12);
+  --lg-thin-highlight: rgba(255, 255, 255, 0.75);
+  --lg-thin-shadow: 0 4px 16px rgba(20, 33, 61, 0.06);
+
+  /* Material Tier: Regular (Top Nav, Floating Action Bar, Status Pills) */
+  --lg-regular-fill: rgba(255, 255, 255, 0.72);
+  --lg-regular-fill-dark: rgba(20, 33, 61, 0.82);
+  --lg-regular-solid: #FFFFFF;
+  --lg-regular-solid-dark: #14213D;
+  --lg-regular-blur: 24px;
+  --lg-regular-saturation: 140%;
+  --lg-regular-edge: rgba(20, 33, 61, 0.18);
+  --lg-regular-edge-dark: rgba(0, 245, 212, 0.4);
+  --lg-regular-highlight: rgba(255, 255, 255, 0.9);
+  --lg-regular-highlight-dark: rgba(255, 255, 255, 0.15);
+  --lg-regular-shadow: 0 10px 32px rgba(20, 33, 61, 0.12), 4px 4px 0px #14213D;
+
+  /* Material Tier: Thick (HUD Overlays, Sheets, Menus, Modals) */
+  --lg-thick-fill: rgba(255, 255, 255, 0.88);
+  --lg-thick-fill-dark: rgba(20, 33, 61, 0.92);
+  --lg-thick-solid: #FFFFFF;
+  --lg-thick-solid-dark: #14213D;
+  --lg-thick-blur: 28px;
+  --lg-thick-saturation: 130%;
+  --lg-thick-edge: rgba(20, 33, 61, 0.22);
+  --lg-thick-edge-dark: rgba(255, 255, 255, 0.18);
+  --lg-thick-highlight: rgba(255, 255, 255, 0.95);
+  --lg-thick-shadow: 0 16px 48px rgba(20, 33, 61, 0.16), 6px 6px 0px #14213D;
+
+  /* Scrim Tier (Backdrop dimming for modals) */
+  --lg-scrim-bg: rgba(20, 33, 61, 0.55);
+  --lg-scrim-blur: 10px;
+
+  /* Concentric Radius Hierarchy */
+  --lg-radius-surface: 24px;
+  --lg-radius-component: 18px;
+  --lg-radius-control: 12px;
+  --lg-radius-pill: 999px;
+}
+
+/* ============================================================
+   MATERIAL UTILITIES (FALLBACK-FIRST FOR ACCESSIBILITY)
+============================================================== */
+
+/* 1. Regular Glass */
+.lg-regular {
+  background: var(--lg-regular-solid);
+  border: 2px solid var(--lg-regular-edge);
+  box-shadow: inset 0 1px 0 var(--lg-regular-highlight), var(--lg-regular-shadow);
+}
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .lg-regular {
+    background: var(--lg-regular-fill);
+    -webkit-backdrop-filter: blur(var(--lg-regular-blur)) saturate(var(--lg-regular-saturation));
+    backdrop-filter: blur(var(--lg-regular-blur)) saturate(var(--lg-regular-saturation));
+  }
+}
+
+/* 2. Regular Dark Glass (for active navigation HUD over light canvases) */
+.lg-regular-dark {
+  background: var(--lg-regular-solid-dark);
+  border: 2px solid var(--lg-regular-edge-dark);
+  box-shadow: inset 0 1px 0 var(--lg-regular-highlight-dark), 0 8px 32px rgba(0, 0, 0, 0.35), 4px 4px 0px #00F5D4;
+}
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .lg-regular-dark {
+    background: var(--lg-regular-fill-dark);
+    -webkit-backdrop-filter: blur(var(--lg-regular-blur)) saturate(var(--lg-regular-saturation));
+    backdrop-filter: blur(var(--lg-regular-blur)) saturate(var(--lg-regular-saturation));
+  }
+}
+
+/* 3. Thick Glass (for critical telemetry HUD & modal dialogs) */
+.lg-thick {
+  background: var(--lg-thick-solid);
+  border: 3px solid var(--lg-brand-ink);
+  box-shadow: inset 0 1px 0 var(--lg-thick-highlight), var(--lg-thick-shadow);
+}
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .lg-thick {
+    background: var(--lg-thick-fill);
+    -webkit-backdrop-filter: blur(var(--lg-thick-blur)) saturate(var(--lg-thick-saturation));
+    backdrop-filter: blur(var(--lg-thick-blur)) saturate(var(--lg-thick-saturation));
+  }
+}
+
+/* 4. Thin Glass (for floating chips, tags, and secondary action badges) */
+.lg-thin {
+  background: var(--lg-thin-solid);
+  border: 1.5px solid var(--lg-thin-edge);
+  box-shadow: inset 0 1px 0 var(--lg-thin-highlight), var(--lg-thin-shadow);
+}
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .lg-thin {
+    background: var(--lg-thin-fill);
+    -webkit-backdrop-filter: blur(var(--lg-thin-blur)) saturate(var(--lg-thin-saturation));
+    backdrop-filter: blur(var(--lg-thin-blur)) saturate(var(--lg-thin-saturation));
+  }
+}
+
+/* 5. Scrim Backdrop */
+.lg-scrim {
+  background: var(--lg-scrim-bg);
+}
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .lg-scrim {
+    -webkit-backdrop-filter: blur(var(--lg-scrim-blur));
+    backdrop-filter: blur(var(--lg-scrim-blur));
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY & PREFERENCE OVERRIDES (NON-NEGOTIABLE)
+============================================================== */
+
+/* Reduced Transparency: Revert glass to solid opaque surfaces */
+@media (prefers-reduced-transparency: reduce) {
+  .lg-regular {
+    background: var(--lg-regular-solid) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .lg-regular-dark {
+    background: var(--lg-regular-solid-dark) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .lg-thick {
+    background: var(--lg-thick-solid) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .lg-thin {
+    background: var(--lg-thin-solid) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .lg-scrim {
+    background: rgba(20, 33, 61, 0.85) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* High Contrast / More Contrast Mode */
+@media (prefers-contrast: more) {
+  .lg-regular, .lg-thick, .lg-thin {
+    background: #FFFFFF !important;
+    border: 3px solid var(--lg-brand-ink) !important;
+    box-shadow: 4px 4px 0px var(--lg-brand-ink) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Windows Forced Colors */
+@media (forced-colors: active) {
+  .lg-regular, .lg-regular-dark, .lg-thick, .lg-thin {
+    background: Canvas !important;
+    border: 2px solid CanvasText !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}

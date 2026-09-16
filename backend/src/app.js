@@ -11,6 +11,7 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import goalRoutes from "./routes/goalRoutes.js";
 import predictionRoutes from "./routes/predictionRoutes.js";
+import liveTripRoutes from "./routes/liveTripRoutes.js";
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.get("/", (req, res) => res.json({ message: "🚀 Tripchain API is live!" }))
 app.get("/health", (req, res) => res.status(200).json({ status: "ok", uptime: process.uptime() }));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/trips/live", liveTripRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/trip-insights", tripInsightRoutes);
 app.use("/api/eco-score", ecoScoreRoutes);

@@ -41,12 +41,28 @@ const Navbar = () => {
         {/* DESKTOP NAV LINKS */}
         {!isAuthPage && (
           <nav className="navbar-links desktop-only">
-            <Link to="/" style={{display: "flex", alignItems: "center", gap: "6px"}}><LayoutDashboard size={18} /> Dashboard</Link>
-            <Link to="/add-trip" style={{display: "flex", alignItems: "center", gap: "6px"}}><PlusCircle size={18} /> Add Trip</Link>
-            <Link to="/insights" style={{display: "flex", alignItems: "center", gap: "6px"}}><BarChart2 size={18} /> Insights</Link>
-            <Link to="/achievements" style={{display: "flex", alignItems: "center", gap: "6px"}}><Trophy size={18} /> Achievements</Link>
-            <Link to="/profile" style={{display: "flex", alignItems: "center", gap: "6px"}}><User size={18} /> Profile</Link>
-            <Link to="/planner" style={{display: "flex", alignItems: "center", gap: "6px"}}><Map size={18} /> Route Planner</Link>
+            <Link to="/" className={location.pathname === "/" ? "active" : ""} style={{display: "flex", alignItems: "center", gap: "6px"}}>
+              <LayoutDashboard size={17} /> Dashboard
+            </Link>
+            <Link to="/planner" className={location.pathname === "/planner" ? "active" : ""} style={{display: "flex", alignItems: "center", gap: "6px"}}>
+              <Map size={17} /> Route Planner
+            </Link>
+            <Link to="/track" className={location.pathname === "/track" ? "active" : ""} style={{display: "flex", alignItems: "center", gap: "6px", position: "relative"}}>
+              <span style={{width: "8px", height: "8px", borderRadius: "50%", background: "#00F5D4", boxShadow: "0 0 8px #00F5D4", display: "inline-block"}}></span>
+              Live Tracker
+            </Link>
+            <Link to="/add-trip" className={location.pathname === "/add-trip" ? "active" : ""} style={{display: "flex", alignItems: "center", gap: "6px"}}>
+              <PlusCircle size={17} /> Add Trip
+            </Link>
+            <Link to="/insights" className={location.pathname === "/insights" ? "active" : ""} style={{display: "flex", alignItems: "center", gap: "6px"}}>
+              <BarChart2 size={17} /> Insights
+            </Link>
+            <Link to="/achievements" className={location.pathname === "/achievements" ? "active" : ""} style={{display: "flex", alignItems: "center", gap: "6px"}}>
+              <Trophy size={17} /> Achievements
+            </Link>
+            <Link to="/profile" className={location.pathname === "/profile" ? "active" : ""} style={{display: "flex", alignItems: "center", gap: "6px"}}>
+              <User size={17} /> Profile
+            </Link>
           </nav>
         )}
 
@@ -90,12 +106,16 @@ const Navbar = () => {
             </button>
 
             <nav className="mobile-nav-links">
-              <Link to="/" onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><LayoutDashboard size={24} /> Dashboard</Link>
-              <Link to="/add-trip" onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><PlusCircle size={24} /> Add Trip</Link>
-              <Link to="/insights" onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><BarChart2 size={24} /> Insights</Link>
-              <Link to="/achievements" onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><Trophy size={24} /> Achievements</Link>
-              <Link to="/profile" onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><User size={24} /> Profile</Link>
-              <Link to="/planner" onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><Map size={24} /> Route Planner</Link>
+              <Link to="/" className={location.pathname === "/" ? "active" : ""} onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><LayoutDashboard size={24} /> Dashboard</Link>
+              <Link to="/planner" className={location.pathname === "/planner" ? "active" : ""} onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><Map size={24} /> Route Planner</Link>
+              <Link to="/track" className={location.pathname === "/track" ? "active" : ""} onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}>
+                <span style={{width: "10px", height: "10px", borderRadius: "50%", background: "#00F5D4", boxShadow: "0 0 10px #00F5D4", display: "inline-block"}}></span>
+                Live Tracker
+              </Link>
+              <Link to="/add-trip" className={location.pathname === "/add-trip" ? "active" : ""} onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><PlusCircle size={24} /> Add Trip</Link>
+              <Link to="/insights" className={location.pathname === "/insights" ? "active" : ""} onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><BarChart2 size={24} /> Insights</Link>
+              <Link to="/achievements" className={location.pathname === "/achievements" ? "active" : ""} onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><Trophy size={24} /> Achievements</Link>
+              <Link to="/profile" className={location.pathname === "/profile" ? "active" : ""} onClick={() => setMenuOpen(false)} style={{display: "flex", alignItems: "center", gap: "10px"}}><User size={24} /> Profile</Link>
 
               {!token ? (
                 <>

@@ -232,6 +232,13 @@ const Dashboard = () => {
               )}
               <button 
                 className="neo-btn-sm" 
+                onClick={() => navigate("/track")}
+                style={{ background: "#00F5D4", color: "#14213D", border: "2px solid #14213D", display: "inline-flex", alignItems: "center", gap: "6px" }}
+              >
+                <Compass size={16} strokeWidth={2.5} /> Live Commute
+              </button>
+              <button 
+                className="neo-btn-sm" 
                 onClick={() => navigate("/add-trip")}
               >
                 <Plus size={16} strokeWidth={3} /> Log Trip
@@ -256,15 +263,15 @@ const Dashboard = () => {
 
               <h4>Your Expedition Log is Ready</h4>
               <p>
-                Every journey counts! Track your daily commute, save CO₂, and level up your eco adventurer rank across the globe.
+                Every journey counts! Track your daily commute in real time, save CO₂, and level up your eco adventurer rank across the globe.
               </p>
 
               <div className="empty-cta-group">
-                <button className="neo-cta-primary" onClick={() => navigate("/planner")}>
-                  <Route size={18} /> Plan an Eco Route
+                <button className="neo-cta-primary" onClick={() => navigate("/track")} style={{ background: "#00F5D4", color: "#14213D" }}>
+                  <Compass size={18} /> Start Live Commute
                 </button>
-                <button className="neo-cta-secondary" onClick={() => navigate("/add-trip")}>
-                  <Plus size={18} /> Quick Log a Trip
+                <button className="neo-cta-secondary" onClick={() => navigate("/planner")}>
+                  <Route size={18} /> Plan an Eco Route
                 </button>
               </div>
             </div>
