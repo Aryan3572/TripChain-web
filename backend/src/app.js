@@ -1,6 +1,7 @@
-// src/app.js
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
+import { apiRateLimiter } from "./middleware/rateLimiter.js";
 import authRoutes from "./routes/authRoutes.js";
 import tripRoutes from "./routes/tripRoutes.js";
 import tripInsightRoutes from "./routes/tripInsightRoutes.js";
@@ -15,6 +16,17 @@ import liveTripRoutes from "./routes/liveTripRoutes.js";
 
 const app = express();
 
+// Security: Disable X-Powered-By fingerprinting
+app.disable("x-powered-by");
+
+// Security: Enforce secure HTTP response headers via Helmet
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
+
 app.use(cors({
   origin: [
     "http://localhost:3000",
@@ -25,7 +37,11 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json());
+// Security: Strictly bound request JSON payload size to prevent memory exhaustion
+app.use(express.json({ limit: "50kb" }));
+
+// Security: Apply general rate limiter across all /api endpoints
+app.use("/api", apiRateLimiter);
 
 app.get("/", (req, res) => res.json({ message: "🚀 Tripchain API is live!" }));
 app.get("/health", (req, res) => res.status(200).json({ status: "ok", uptime: process.uptime() }));
@@ -45,7 +61,14 @@ app.use("/api/predictions", predictionRoutes);
 // Global error handler LAST
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
-  res.status(500).json({ success: false, message: "Internal Server Error" });
+  const status = err.status || err.statusCode || 500;
+  const message =
+    status === 413
+      ? "Payload too large. Request body must not exceed 50kb."
+      : status < 500
+      ? err.message
+      : "Internal Server Error";
+  res.status(status).json({ success: false, message });
 });
 
 export default app;

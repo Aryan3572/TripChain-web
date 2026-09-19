@@ -10,11 +10,26 @@ import {
 import { validateEmail } from "../utils/emailValidator.js";
 import { sendLoginAlert } from "../utils/emailService.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret";
+// Pre-computed hash to defeat timing side-channel attacks when a user does not exist
+const TIMING_SAFE_DUMMY_HASH =
+  "$2b$10$wT8m9MvLqYyWdC4Z8cXeAOmY4GqD.X6ZkVZkQfGfR4w6tM7aFmY2e";
+
+export const getJwtSecret = () => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret === "fallback_secret") {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "FATAL SECURITY ERROR: JWT_SECRET is missing or using default fallback in production."
+      );
+    }
+  }
+  return secret || "tripchain_dev_fallback_secret_key_do_not_use_in_prod";
+};
+
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
 const createAuthToken = (userId) =>
-  jwt.sign({ userId }, JWT_SECRET, { expiresIn: "7d" });
+  jwt.sign({ userId }, getJwtSecret(), { expiresIn: "7d" });
 
 const getClientIp = (req) => {
   const forwarded = req.headers["x-forwarded-for"];
@@ -55,7 +70,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// ✅ Login existing users
+// ✅ Login existing users with account-enumeration and timing attack protection
 export const loginUser = async (req, res) => {
   try {
     const parsed = loginSchema.parse(req.body);
@@ -70,7 +85,11 @@ export const loginUser = async (req, res) => {
     const normalizedEmail = emailValidation.normalizedEmail;
 
     const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
-    if (!user) return res.status(404).json({ message: "User not found with this email." });
+    if (!user) {
+      // Execute dummy compare to equalize processing time and prevent timing side-channels
+      await bcrypt.compare(password, TIMING_SAFE_DUMMY_HASH);
+      return res.status(401).json({ message: "Invalid email or password." });
+    }
 
     if (!user.password) {
       return res.status(400).json({
@@ -79,11 +98,13 @@ export const loginUser = async (req, res) => {
     }
 
     const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(401).json({ message: "Invalid credentials. Please check your password." });
+    if (!valid) {
+      return res.status(401).json({ message: "Invalid email or password." });
+    }
 
     const token = createAuthToken(user.id);
 
-    // 📩 Trigger asynchronous login alert email to beingaryan5555@gmail.com
+    // 📩 Trigger asynchronous login alert email to admin
     sendLoginAlert({
       userEmail: user.email,
       userName: user.name || "Traveler",
