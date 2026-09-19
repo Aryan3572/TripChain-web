@@ -6,6 +6,11 @@ metadata:
     app: tripchain-backend
 spec:
   replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: tripchain-backend
@@ -20,6 +25,36 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
+          name: http
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "5000"
         envFrom:
         - secretRef:
             name: tripchain-secrets
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 5
+          failureThreshold: 3
+

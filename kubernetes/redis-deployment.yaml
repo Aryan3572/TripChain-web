@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripchain-redis
+  labels:
+    app: tripchain-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tripchain-redis
+  template:
+    metadata:
+      labels:
+        app: tripchain-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+          name: redis
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+        readinessProbe:
+          exec:
+            command: ["redis-cli", "ping"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          exec:
+            command: ["redis-cli", "ping"]
+          initialDelaySeconds: 10
+          periodSeconds: 10

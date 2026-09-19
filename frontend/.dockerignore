@@ -4,3 +4,7 @@ npm-debug.log
 .gitignore
 README.md
 build
+.env
+.env.*
+!.env.example
+
