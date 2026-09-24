@@ -4,7 +4,9 @@ import { apiRequest } from "../api/api";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import { validateEmailAddress } from "../utils/emailValidator";
 import { motion } from "framer-motion";
-import { UserPlus, User, Mail, Lock } from "lucide-react";
+import { UserPlus, User, Mail, Lock, Wallet, Sparkles } from "lucide-react";
+import { useWeb3 } from "../context/Web3Context";
+import mascotImg from "../assets/mascot.png";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -15,6 +17,55 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [mascotState, setMascotState] = useState("normal");
   const navigate = useNavigate();
+  const { loginWithWallet, loginWithDemo, isConnecting, statusMessage } = useWeb3();
+
+  const handleWalletSignup = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setMsg("");
+    setIsError(false);
+    setLoading(true);
+    try {
+      const res = await loginWithWallet();
+      if (res && res.success) {
+        setMascotState("happy");
+        setMsg("Wallet connected! Welcome to Tripchain.");
+        setTimeout(() => navigate("/", { replace: true }), 500);
+      } else if (res && res.error) {
+        setMsg(res.error);
+        setIsError(true);
+        setMascotState("normal");
+      }
+    } catch (err) {
+      setMsg(err.message || "Wallet sign-in failed");
+      setIsError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoSignup = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setMsg("");
+    setIsError(false);
+    setLoading(true);
+    try {
+      const res = await loginWithDemo();
+      if (res && res.success) {
+        setMascotState("happy");
+        setMsg("Welcome to Tripchain Sandbox Demo!");
+        setTimeout(() => navigate("/", { replace: true }), 500);
+      } else if (res && res.error) {
+        setMsg(res.error);
+        setIsError(true);
+        setMascotState("normal");
+      }
+    } catch (err) {
+      setMsg(err.message || "Demo sign-up failed");
+      setIsError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -94,7 +145,7 @@ const Signup = () => {
             boxSizing: "border-box",
           }}>
             <h1 style={{ fontSize: "clamp(1.5rem, 4vw, 2rem)", color: "#10B981", marginBottom: "8px", display: "flex", alignItems: "center", gap: "10px" }}>
-              <span style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)" }}>--</span> Let's explore!
+              <span style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)" }}>🌿</span> Let's explore!
             </h1>
             <p style={{ fontSize: "clamp(0.95rem, 2vw, 1.1rem)", color: "var(--text-main)", lineHeight: "1.5", fontWeight: "600", margin: 0 }}>
               Join the Tripchain community today! Together we can track your trips, lower our carbon footprint, and earn some awesome blockchain NFT badges!
@@ -136,7 +187,7 @@ const Signup = () => {
             filter: mascotState === "hidden" ? "brightness(0.7) blur(3px)" : "brightness(1) blur(0px)",
           }}
           transition={{ type: "spring", bounce: 0.6, delay: 0.1 }}
-          src="/mascot.png"
+          src={mascotImg}
           alt="Tripchain Mascot"
           style={{
             width: "clamp(150px, 30vw, 240px)",
@@ -160,7 +211,7 @@ const Signup = () => {
         {/* Mobile Mascot Buddy Header */}
         <div className="mobile-mascot-header">
           <motion.img
-            src="/mascot.png"
+            src={mascotImg}
             alt="Tripchain Mascot"
             className="mobile-mascot-avatar"
             animate={{
@@ -176,6 +227,76 @@ const Signup = () => {
 
         <h1 className="auth-title" style={{ fontSize: "clamp(1.6rem, 4vw, 2.2rem)", marginBottom: "8px", color: "#14213D" }}>Create your account</h1>
         <p className="auth-subtitle" style={{ color: "var(--text-muted)", marginBottom: "24px", fontSize: "clamp(0.95rem, 2vw, 1.05rem)" }}>Join Tripchain and start tracking your journeys.</p>
+
+        <div style={{ display: "flex", gap: "10px", width: "100%", marginBottom: "12px" }}>
+          <button
+            type="button"
+            onClick={handleWalletSignup}
+            disabled={loading || isConnecting}
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              padding: "14px 16px",
+              borderRadius: "16px",
+              border: "3px solid #14213D",
+              background: "#6366F1",
+              color: "#FFFFFF",
+              fontSize: "15px",
+              fontWeight: "800",
+              cursor: "pointer",
+              boxShadow: "4px 4px 0px #14213D",
+              transition: "all 0.15s ease",
+            }}
+          >
+            <Wallet size={20} />
+            {isConnecting ? "Connecting Wallet..." : "Sign Up with Ethereum / Wallet"}
+          </button>
+
+          <motion.button
+            type="button"
+            onClick={handleDemoSignup}
+            disabled={loading || isConnecting}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="Try Demo Sandbox Mode (Instant access, no MetaMask/gas needed)"
+            aria-label="Demo Sandbox Mode"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "14px 18px",
+              borderRadius: "16px",
+              border: "3px solid #14213D",
+              background: "#FEF08A",
+              color: "#854D0E",
+              cursor: "pointer",
+              boxShadow: "4px 4px 0px #14213D",
+              transition: "all 0.15s ease",
+              flexShrink: 0,
+            }}
+          >
+            <Sparkles size={22} color="#854D0E" />
+          </motion.button>
+        </div>
+
+        {statusMessage && (
+          <div style={{
+            fontSize: "13px",
+            color: "#4F46E5",
+            fontWeight: "bold",
+            textAlign: "center",
+            marginBottom: "12px",
+            background: "#EEF2FF",
+            padding: "8px 12px",
+            borderRadius: "12px",
+            border: "2px solid #C7D2FE",
+          }}>
+            ⏳ {statusMessage}
+          </div>
+        )}
 
         <GoogleAuthButton
           label="Sign up with Google"

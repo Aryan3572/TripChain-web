@@ -3,10 +3,12 @@ import { apiRequest } from "../api/api";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
-  LayoutDashboard, Activity, Leaf, Bell, Route, Navigation, MapPin, Zap, 
-  Award, Globe, Lightbulb, Info, Plus, ArrowRight, Clock, Sparkles, 
-  Footprints, Bike, Bus, Car, Train, Compass, Target, ChevronRight
+  LayoutDashboard, Activity, Leaf, Bell, Route, Navigation, Zap, 
+  Award, Lightbulb, Plus, ArrowRight, Clock, Sparkles, 
+  Footprints, Bike, Bus, Car, Train, Compass, Target, ChevronRight,
+  Coins
 } from "lucide-react";
+import { useWeb3 } from "../context/Web3Context";
 import "../styles/dashboard.css"; 
 
 // Mode styling helper
@@ -123,6 +125,7 @@ const Dashboard = () => {
   const [ecoScore, setEcoScore] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [recentTrips, setRecentTrips] = useState([]);
+  const { tripBalance, rewardStats, claimRewards, txPending } = useWeb3();
 
   const navigate = useNavigate();
 
@@ -211,6 +214,96 @@ const Dashboard = () => {
             </p>
           </motion.div>
         </div>
+
+        {/* WEB3 ECO-REWARDS HERO CARD */}
+        <motion.div
+          variants={itemVariants}
+          style={{
+            background: "linear-gradient(135deg, #14213D 0%, #1E293B 100%)",
+            border: "4px solid #14213D",
+            borderRadius: "24px",
+            padding: "clamp(20px, 4vw, 32px)",
+            boxShadow: "6px 6px 0px #FFBE0B",
+            color: "#FFFFFF",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "24px",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px", maxWidth: "560px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#FFBE0B", fontWeight: "800", fontSize: "0.9rem", textTransform: "uppercase" }}>
+              <Coins size={18} /> Web3 Tokenized Mobility
+            </div>
+            <h3 style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)", fontWeight: "900", margin: 0, color: "#FFFFFF" }}>
+              $TRIP Eco-Rewards & Carbon Neutrality
+            </h3>
+            <p style={{ color: "#94A3B8", fontSize: "0.95rem", margin: 0, fontWeight: "500" }}>
+              Turn your green commutes into on-chain tokens. Claim reward vouchers or burn tokens to permanently neutralize CO₂ emissions.
+            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: "20px", marginTop: "8px", flexWrap: "wrap" }}>
+              <div>
+                <span style={{ fontSize: "0.8rem", color: "#94A3B8", display: "block" }}>Wallet Balance</span>
+                <span style={{ fontSize: "1.3rem", fontWeight: "900", color: "#FFBE0B" }}>{tripBalance} $TRIP</span>
+              </div>
+              <div style={{ width: "2px", height: "30px", background: "#334155" }}></div>
+              <div>
+                <span style={{ fontSize: "0.8rem", color: "#94A3B8", display: "block" }}>Unclaimed Rewards</span>
+                <span style={{ fontSize: "1.3rem", fontWeight: "900", color: "#10B981" }}>
+                  {rewardStats?.pendingClaimableTrip || 0} $TRIP
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%", maxWidth: "260px" }}>
+            {rewardStats?.pendingClaimableTrip > 0 ? (
+              <button
+                onClick={claimRewards}
+                disabled={txPending}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  padding: "14px 20px",
+                  borderRadius: "14px",
+                  background: "#22C55E",
+                  color: "#FFFFFF",
+                  border: "2px solid #16A34A",
+                  fontWeight: "900",
+                  fontSize: "1rem",
+                  cursor: "pointer",
+                  boxShadow: "3px 3px 0px #166534",
+                }}
+              >
+                <Sparkles size={18} /> {txPending ? "Confirming..." : `Claim ${rewardStats.pendingClaimableTrip} $TRIP`}
+              </button>
+            ) : null}
+
+            <button
+              onClick={() => navigate("/rewards")}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+                padding: "14px 20px",
+                borderRadius: "14px",
+                background: "#FFBE0B",
+                color: "#14213D",
+                border: "2px solid #14213D",
+                fontWeight: "900",
+                fontSize: "1rem",
+                cursor: "pointer",
+                boxShadow: "3px 3px 0px #14213D",
+              }}
+            >
+              Explore Web3 Hub <ArrowRight size={18} />
+            </button>
+          </div>
+        </motion.div>
 
         {/* RECENT TRIPS */}
         <motion.section className="section-card" variants={itemVariants}>

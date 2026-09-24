@@ -4,7 +4,9 @@ import { apiRequest } from "../api/api";
 import GoogleAuthButton from "../components/GoogleAuthButton";
 import { validateEmailAddress } from "../utils/emailValidator";
 import { motion } from "framer-motion";
-import { LogIn, Mail, Lock } from "lucide-react";
+import { LogIn, Mail, Lock, Wallet, Sparkles } from "lucide-react";
+import { useWeb3 } from "../context/Web3Context";
+import mascotImg from "../assets/mascot.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +15,47 @@ const Login = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [mascotState, setMascotState] = useState("normal");
   const navigate = useNavigate();
+  const { loginWithWallet, loginWithDemo, isConnecting, statusMessage } = useWeb3();
+
+  const handleWalletLogin = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setErrorMsg("");
+    setLoading(true);
+    try {
+      const res = await loginWithWallet();
+      if (res && res.success) {
+        setMascotState("happy");
+        setTimeout(() => navigate("/", { replace: true }), 500);
+      } else if (res && res.error) {
+        setErrorMsg(res.error);
+        setMascotState("normal");
+      }
+    } catch (err) {
+      setErrorMsg(err.message || "Wallet sign-in failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoLogin = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    setErrorMsg("");
+    setLoading(true);
+    try {
+      const res = await loginWithDemo();
+      if (res && res.success) {
+        setMascotState("happy");
+        setTimeout(() => navigate("/", { replace: true }), 500);
+      } else if (res && res.error) {
+        setErrorMsg(res.error);
+        setMascotState("normal");
+      }
+    } catch (err) {
+      setErrorMsg(err.message || "Demo sign-in failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -88,7 +131,7 @@ const Login = () => {
             boxSizing: "border-box",
           }}>
             <h1 style={{ fontSize: "clamp(1.5rem, 4vw, 2rem)", color: "#3A86FF", marginBottom: "8px", display: "flex", alignItems: "center", gap: "10px" }}>
-              <span style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)" }}>--</span> Hey traveler!
+              <span style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)" }}>👋</span> Hey traveler!
             </h1>
             <p style={{ fontSize: "clamp(0.95rem, 2vw, 1.1rem)", color: "var(--text-main)", lineHeight: "1.5", fontWeight: "600", margin: 0 }}>
               Welcome back! I'm excited to see where you're heading next. Log in so we can keep tracking your amazing, eco-friendly journeys together!
@@ -130,7 +173,7 @@ const Login = () => {
             filter: mascotState === "hidden" ? "brightness(0.7) blur(3px)" : "brightness(1) blur(0px)",
           }}
           transition={{ type: "spring", bounce: 0.6, delay: 0.1 }}
-          src="/mascot.png"
+          src={mascotImg}
           alt="Tripchain Mascot"
           style={{
             width: "clamp(150px, 30vw, 240px)",
@@ -154,7 +197,7 @@ const Login = () => {
         {/* Mobile Mascot Buddy Header */}
         <div className="mobile-mascot-header">
           <motion.img
-            src="/mascot.png"
+            src={mascotImg}
             alt="Tripchain Mascot"
             className="mobile-mascot-avatar"
             animate={{
@@ -170,6 +213,76 @@ const Login = () => {
 
         <h1 className="auth-title" style={{ fontSize: "clamp(1.8rem, 4vw, 2.5rem)", marginBottom: "8px", color: "#14213D" }}>Welcome back <span>!!</span></h1>
         <p className="auth-subtitle" style={{ color: "var(--text-muted)", marginBottom: "30px", fontSize: "1.1rem" }}>Log in to your Web3 travel dashboard</p>
+
+        <div style={{ display: "flex", gap: "10px", width: "100%", marginBottom: "12px" }}>
+          <button
+            type="button"
+            onClick={handleWalletLogin}
+            disabled={loading || isConnecting}
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "10px",
+              padding: "14px 16px",
+              borderRadius: "16px",
+              border: "3px solid #14213D",
+              background: "#6366F1",
+              color: "#FFFFFF",
+              fontSize: "15px",
+              fontWeight: "800",
+              cursor: "pointer",
+              boxShadow: "4px 4px 0px #14213D",
+              transition: "all 0.15s ease",
+            }}
+          >
+            <Wallet size={20} />
+            {isConnecting ? "Connecting Wallet..." : "Sign In with Ethereum / Wallet"}
+          </button>
+
+          <motion.button
+            type="button"
+            onClick={handleDemoLogin}
+            disabled={loading || isConnecting}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            title="Try Demo Sandbox Mode (Instant access, no MetaMask/gas needed)"
+            aria-label="Demo Sandbox Mode"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "14px 18px",
+              borderRadius: "16px",
+              border: "3px solid #14213D",
+              background: "#FEF08A",
+              color: "#854D0E",
+              cursor: "pointer",
+              boxShadow: "4px 4px 0px #14213D",
+              transition: "all 0.15s ease",
+              flexShrink: 0,
+            }}
+          >
+            <Sparkles size={22} color="#854D0E" />
+          </motion.button>
+        </div>
+
+        {statusMessage && (
+          <div style={{
+            fontSize: "13px",
+            color: "#4F46E5",
+            fontWeight: "bold",
+            textAlign: "center",
+            marginBottom: "12px",
+            background: "#EEF2FF",
+            padding: "8px 12px",
+            borderRadius: "12px",
+            border: "2px solid #C7D2FE",
+          }}>
+            ⏳ {statusMessage}
+          </div>
+        )}
 
         <GoogleAuthButton
           label="Continue with Google"

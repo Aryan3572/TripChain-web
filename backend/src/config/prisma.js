@@ -1,5 +1,5 @@
 // src/config/prisma.js
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../prisma/generated/client/index.js";
 import dotenv from "dotenv";
 
 // Force load and override any stale terminal env variables with our .env

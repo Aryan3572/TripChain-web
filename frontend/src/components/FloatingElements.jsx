@@ -48,28 +48,37 @@ const FloatingElements = ({ themeColor = "#3A86FF" }) => {
   }, []);
 
   const elements = React.useMemo(() => {
-    return Array.from({ length: 16 }).map((_, i) => {
+    const isMobileDevice = typeof window !== "undefined" && window.innerWidth <= 768;
+    const count = isMobileDevice ? 3 : 6;
+
+    return Array.from({ length: count }).map((_, i) => {
       const isCloud = i % 2 === 0;
-      const isPlane = i % 5 === 0;
-      const size = Math.random() * 40 + 46;
-      const duration = Math.random() * 25 + 15;
-      const delay = Math.random() * -20; // negative delay so they start already on screen
-      const startY = Math.random() * 90;
+      const isPlane = i % 4 === 0;
+      const size = Math.random() * 32 + 36;
+      const duration = Math.random() * 20 + 20;
+      const delay = Math.random() * -15; // negative delay so they start already on screen
+      const startY = Math.random() * 85;
       
       return (
         <motion.div
           key={i}
           initial={{ x: "-15vw", y: `${startY}vh` }}
-          animate={{ x: "110vw", y: `${startY + (Math.random() * 20 - 10)}vh` }}
+          animate={{ x: "110vw", y: `${startY + (Math.random() * 15 - 7)}vh` }}
           transition={{ duration, delay, repeat: Infinity, ease: "linear" }}
-          style={{ position: "absolute", zIndex: 0, opacity: Math.random() * 0.25 + 0.35 }}
+          style={{
+            position: "absolute",
+            zIndex: 0,
+            opacity: Math.random() * 0.2 + 0.25,
+            willChange: "transform",
+            transform: "translateZ(0)",
+          }}
         >
           {isPlane ? (
             <Plane size={size} color={themeColor} fill={themeColor} />
           ) : isCloud ? (
-            <Cloud size={size * 1.4} color={themeColor} fill={themeColor} />
+            <Cloud size={size * 1.3} color={themeColor} fill={themeColor} />
           ) : (
-            <Leaf size={size * 0.9} color="#FFBE0B" fill="#FFBE0B" />
+            <Leaf size={size * 0.85} color="#FFBE0B" fill="#FFBE0B" />
           )}
         </motion.div>
       );

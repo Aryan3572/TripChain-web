@@ -13,6 +13,7 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import goalRoutes from "./routes/goalRoutes.js";
 import predictionRoutes from "./routes/predictionRoutes.js";
 import liveTripRoutes from "./routes/liveTripRoutes.js";
+import web3Routes from "./routes/web3Routes.js";
 
 const app = express();
 
@@ -27,14 +28,26 @@ app.use(
   })
 );
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:8080",
+  "http://localhost",
+  "https://tripchain-dusky.vercel.app",
+];
+
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL.replace(/\/$/, ""));
+}
+
 app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:8080",
-    "http://localhost",
-    "https://tripchain-dusky.vercel.app",
-  ],
-  credentials: true
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS policy blocked access from ${origin}`));
+  },
+  credentials: true,
 }));
 
 // Security: Strictly bound request JSON payload size to prevent memory exhaustion
@@ -57,6 +70,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/predictions", predictionRoutes);
+app.use("/api/web3", web3Routes);
 
 // Global error handler LAST
 app.use((err, req, res, next) => {

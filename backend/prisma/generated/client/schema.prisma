@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  password      String?
+  googleId      String?  @unique
+  walletAddress String?  @unique
+  nonce         String?
+  createdAt     DateTime @default(now())
+  trips         Trip[]
+
+  badges        UserBadge[]
+  tripPatterns  TripPattern[]
+  goals         Goal[]
+  rewardClaims  RewardClaim[]
+  carbonOffsets CarbonOffset[]
+}
+
+model Trip {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  from      String
+  to        String
+  mode      String
+  distance  Float
+  duration  Int
+  cost      Float?
+  co2       Float?
+  routeType String?  @default("fastest")
+  co2Saved  Float?   @default(0)
+  points    Int?     @default(10)
+  date      DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, date(sort: Desc)])
+}
+
+model UserBadge {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  name        String
+  description String
+  icon        String
+  achievedAt  DateTime @default(now())
+  tokenId     Int?
+  txHash      String?
+  isMinted    Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model RewardClaim {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  amount    Float
+  nonce     String   @unique
+  txHash    String?
+  status    String   @default("CLAIMED")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model CarbonOffset {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  tokensBurned  Float
+  co2OffsetKg   Float
+  certificateId String   @unique
+  txHash        String
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model TripPattern {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  from         String
+  to           String
+  count        Int
+  avgDistance  Float
+  avgDuration  Float
+  lastDetected DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Goal {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  title     String
+  type      String // e.g. "eco", "distance", "active_travel"
+  target    Float? // e.g. 100 (km) or 10 trips etc.
+  unit      String? // e.g. "km", "trips", "score"
+  period    String? // e.g. "weekly", "monthly"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Badge {
+  id          Int     @id @default(autoincrement())
+  code        String  @unique // e.g. "FIRST_TRIP"
+  title       String
+  description String
+  icon        String? // could be emoji or icon name
+}

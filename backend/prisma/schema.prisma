@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -14,12 +15,16 @@ model User {
   email     String   @unique
   password  String?
   googleId  String? @unique
-  createdAt DateTime @default(now())
-  trips     Trip[]
+  walletAddress String?       @unique
+  nonce         String?
+  createdAt     DateTime      @default(now())
+  trips         Trip[]
 
-  badges       UserBadge[]
-  tripPatterns TripPattern[]
-  goals        Goal[]
+  badges        UserBadge[]
+  tripPatterns  TripPattern[]
+  goals         Goal[]
+  rewardClaims  RewardClaim[]
+  carbonOffsets CarbonOffset[]
 }
 
 model Trip {
@@ -49,6 +54,35 @@ model UserBadge {
   description String
   icon        String
   achievedAt  DateTime @default(now())
+  tokenId     Int?
+  txHash      String?
+  isMinted    Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model RewardClaim {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  amount    Float
+  nonce     String   @unique
+  txHash    String?
+  status    String   @default("CLAIMED")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model CarbonOffset {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  tokensBurned  Float
+  co2OffsetKg   Float
+  certificateId String   @unique
+  txHash        String
+  createdAt     DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([userId])

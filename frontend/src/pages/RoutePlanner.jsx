@@ -63,8 +63,33 @@ function RoutePlanner() {
       }
     };
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+    let ro;
+    if (containerRef.current && window.ResizeObserver) {
+      ro = new ResizeObserver(() => {
+        if (mapRef.current) {
+          mapRef.current.resize();
+        }
+      });
+      ro.observe(containerRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (ro) ro.disconnect();
+    };
   }, []);
+
+  // Ensure Mapbox canvas immediately redraws when route options appear or change
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const timers = [
+      setTimeout(() => mapRef.current?.resize(), 50),
+      setTimeout(() => mapRef.current?.resize(), 200),
+      setTimeout(() => mapRef.current?.resize(), 450),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [routeInfo, ecoInfo, selectedRouteType]);
 
   // INIT MAP
   useEffect(() => {
@@ -699,19 +724,31 @@ function RoutePlanner() {
       {/* MAP VIEW CONTAINER */}
       <motion.div
         variants={itemVariants}
-        ref={containerRef}
         style={{
           flex: isMobile ? "none" : 1.5,
-          height: isMobile ? "clamp(340px, 48vh, 550px)" : "auto",
-          minHeight: isMobile ? "340px" : "650px",
+          position: isMobile ? "relative" : "sticky",
+          top: "100px",
+          height: isMobile ? "clamp(340px, 48vh, 550px)" : "calc(100vh - 140px)",
+          minHeight: isMobile ? "340px" : "600px",
+          maxHeight: isMobile ? "none" : "880px",
           width: "100%",
           borderRadius: "clamp(18px, 3vw, 24px)",
           border: "4px solid #14213D",
           boxShadow: "clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0px #14213D",
           overflow: "hidden",
           boxSizing: "border-box",
+          background: "#F1F5F9",
         }}
-      />
+      >
+        <div
+          ref={containerRef}
+          style={{
+            width: "100%",
+            height: "100%",
+            position: "relative",
+          }}
+        />
+      </motion.div>
 
       {/* REWARD CELEBRATION MODAL */}
       <RouteRewardModal 

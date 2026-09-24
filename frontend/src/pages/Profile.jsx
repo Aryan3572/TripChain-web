@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { apiRequest } from "../api/api";
 import { motion } from "framer-motion";
-import { User, Mail, Calendar, Activity, Medal, Star, Leaf, Zap, Flame, Crown, Globe, Rocket, ShieldCheck, Award } from "lucide-react";
+import { User, Mail, Calendar, Activity, Medal, Star, Leaf, Zap, Flame, Crown, Globe, Rocket, ShieldCheck, Award, Wallet } from "lucide-react";
 
 const BadgeIcon = ({ name }) => {
   const n = (name || "").toLowerCase();
@@ -126,6 +126,19 @@ const Profile = () => {
               <div style={{ display: "flex", alignItems: "center", gap: "14px", background: "#F8FAFC", padding: "14px 16px", borderRadius: "16px", border: "3px solid #14213D", flexWrap: "wrap", wordBreak: "break-all" }}>
                 <Calendar size={22} color="#FFBE0B" style={{ flexShrink: 0 }} />
                 <strong style={{color: "#14213D"}}>Joined:</strong> {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "14px", background: "#F8FAFC", padding: "14px 16px", borderRadius: "16px", border: "3px solid #14213D", flexWrap: "wrap", wordBreak: "break-all" }}>
+                <Wallet size={22} color="#6366F1" style={{ flexShrink: 0 }} />
+                <strong style={{color: "#14213D"}}>Web3 Wallet:</strong>
+                {user.walletAddress ? (
+                  <span style={{ color: "#059669", fontWeight: "800", display: "flex", alignItems: "center", gap: "6px" }}>
+                    {user.walletAddress.slice(0, 8)}...{user.walletAddress.slice(-6)} (✓ Linked)
+                  </span>
+                ) : (
+                  <span style={{ color: "#D97706", fontWeight: "700" }}>
+                    Not linked yet (Connect in navbar)
+                  </span>
+                )}
               </div>
               <motion.div 
                 whileHover={{ scale: 1.02 }}

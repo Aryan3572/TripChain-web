@@ -15,6 +15,17 @@ services:
       timeout: 3s
       retries: 5
 
+  hardhat:
+    build:
+      context: ./contracts
+      dockerfile: Dockerfile
+    container_name: tripchain-hardhat
+    ports:
+      - "8545:8545"
+    restart: unless-stopped
+    networks:
+      - tripchain-network
+
   backend:
     build:
       context: ./backend
@@ -27,9 +38,14 @@ services:
     environment:
       - NODE_ENV=production
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - CHAIN_ID=${CHAIN_ID:-31337}
+      - WEB3_RPC_URL=${WEB3_RPC_URL:-http://hardhat:8545}
+      - WEB3_VALIDATOR_PRIVATE_KEY=${WEB3_VALIDATOR_PRIVATE_KEY:-0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80}
     depends_on:
       redis:
         condition: service_healthy
+      hardhat:
+        condition: service_started
     restart: unless-stopped
     networks:
       - tripchain-network
@@ -48,6 +64,7 @@ services:
         REACT_APP_API_BASE: ${REACT_APP_API_BASE:-http://localhost:5000}
         REACT_APP_GOOGLE_CLIENT_ID: ${REACT_APP_GOOGLE_CLIENT_ID:-528195794253-943bnejp73g9butcpnufmk155j81krrg.apps.googleusercontent.com}
         REACT_APP_MAPBOX_TOKEN: ${REACT_APP_MAPBOX_TOKEN:-pk.eyJ1IjoiYXJ5YW4tMzUiLCJhIjoiY21pYmh2cm9mMTFvazJqcXdmanhuZm1hZiJ9.wmuvMk8PuHSr4LWrjZT0OQ}
+        REACT_APP_CHAIN_ID: ${REACT_APP_CHAIN_ID:-31337}
     container_name: tripchain-frontend
     ports:
       - "8080:80"
