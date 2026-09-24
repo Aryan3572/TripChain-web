@@ -1,148 +1,256 @@
-# TripChain Web
+# 🌿 TripChain Web
 
-TripChain is a user-centric travel tracker application with a modern, glassmorphic UI. This project is built using a React frontend and a Node.js/Express backend, connected to a PostgreSQL database via Prisma ORM. The entire application is containerized using Docker and can be orchestrated via Kubernetes.
+[![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-6-indigo.svg)](https://www.prisma.io/)
+[![Solidity](https://img.shields.io/badge/Solidity-0.8.20-363636.svg)](https://soliditylang.org/)
+[![Hardhat](https://img.shields.io/badge/Hardhat-EVM-yellow.svg)](https://hardhat.org/)
+[![Vercel](https://img.shields.io/badge/Vercel-Frontend-black.svg)](https://vercel.com/)
+[![Render](https://img.shields.io/badge/Render-Backend-blueviolet.svg)](https://render.com/)
 
-## 🛠️ Technology Stack & Architecture Decisions
+**TripChain** is a user-centric, decentralized travel tracker and eco-rewards platform. It empowers travelers to log daily trips, visualize eco-friendly transit routes, calculate CO₂ emissions savings, and earn **$TRIP ERC-20 utility tokens** and **ERC-721 NFT badges** verified on-chain.
 
-### Frontend
-- **React.js**: Chosen for its component-based architecture, which allows us to build a highly interactive and dynamic Single Page Application (SPA). It makes state management across complex UI elements (like the route planner and dashboards) seamless.
-- **Custom CSS (Glassmorphic Design)**: Instead of a heavy framework, we used custom CSS to implement a premium, high-performance "glassmorphism" aesthetic with deep custom theming.
-- **Framer Motion**: Integrated to provide fluid, high-fidelity micro-animations and transitions, enhancing the overall user experience and making the interface feel "alive".
-- **Mapbox GL JS**: Selected for the interactive Route Planner map. It offers stunning, highly customizable map tiles and incredibly fast WebGL rendering compared to traditional map libraries.
-
-### Backend & Database
-- **Node.js & Express.js**: Chosen for the backend server because its asynchronous, event-driven architecture is highly performant for handling concurrent I/O requests. It also allows us to use JavaScript across the entire stack.
-- **PostgreSQL (NeonDB)**: A powerful relational database chosen for its strict data integrity and support for complex queries. We specifically host it on NeonDB to take advantage of its serverless scaling and connection pooling.
-- **Prisma ORM**: Used to interact with PostgreSQL. Prisma was selected because it provides auto-generated, type-safe queries and an incredibly intuitive schema configuration, which drastically speeds up development and prevents SQL injection vulnerabilities.
-
-### Infrastructure, Caching & Edge
-- **Redis & In-Memory Fallback Cache**: Integrated via `ioredis` for sub-millisecond response times. Caches user dashboard KPIs, weekly stats, and eco-score aggregations with automatic cache invalidation on trip modifications. Supports cloud Redis (like Upstash) with zero-config in-memory fallback for local development.
-- **Cloudflare Edge Gateway & CDN**: Supports edge caching of read-heavy REST endpoints, automatic CORS preflight handling, and edge security headers via a dedicated Cloudflare Worker (`cloudflare-worker/`).
-- **Docker & Docker Compose**: Used to containerize both the frontend and backend, ensuring consistent behavior across all environments.
-- **Kubernetes (K8s)**: Manifests provided for production-grade orchestrations, automated deployments, and load balancing.
+Designed with a high-performance neo-brutalist & glassmorphic UI, Tripchain features full Web3 wallet authentication (SIWE), an instant zero-gas Demo Sandbox mode, and sub-second page loads powered by route-level code splitting.
 
 ---
 
-## 🚀 Getting Started for Collaborators
+## 📑 Table of Contents
+- [✨ Key Features](#-key-features)
+- [🛠️ Technology Stack](#️-technology-stack)
+- [⛓️ Web3 & Smart Contracts](#️-web3--smart-contracts)
+- [⚡ Performance Optimizations](#-performance-optimizations)
+- [🚀 Quick Start (Local Development)](#-quick-start-local-development)
+  - [1. Prerequisites](#1-prerequisites)
+  - [2. Clone & Install](#2-clone--install)
+  - [3. Configure Environment Variables](#3-configure-environment-variables)
+  - [4. Start Hardhat Node & Deploy Contracts](#4-start-hardhat-node--deploy-contracts)
+  - [5. Run Backend & Frontend](#5-run-backend--frontend)
+- [🐳 Running with Docker Compose](#-running-with-docker-compose)
+- [🌐 Production Deployment (Vercel & Render)](#-production-deployment-vercel--render)
+- [📁 Repository Structure](#-repository-structure)
+- [📚 Documentation Index](#-documentation-index)
 
-If you are cloning this repository to work on it locally, follow these steps to get your environment configured correctly.
+---
+
+## ✨ Key Features
+
+- **🗺️ Interactive Route Planner**: High-performance Mapbox GL routing showing multi-modal travel routes (transit, walking, cycling, driving) with dynamic CO₂ emissions calculations.
+- **📍 Live GPS Trip Tracker**: Real-time journey recording with speed, breadcrumbs, battery monitoring, and automatic points computation.
+- **🪙 $TRIP Token Rewards**: Earn ERC-20 utility tokens for choosing green transport. Tokens can be claimed on-chain or burned to offset carbon footprints.
+- **🏅 On-Chain NFT Badges**: Unlock verifiable ERC-721 achievement badges (e.g. *Eco Pioneer*, *Transit Master*) mintable to your Web3 wallet via gas-efficient EIP-712 vouchers.
+- **🦊 Web3 & SIWE Authentication**: Sign In with Ethereum (EIP-4361) using MetaMask, with automatic wallet address linking and account conflict resolution.
+- **✨ 1-Click Demo Sandbox Mode**: Try all decentralized features, rewards claiming, and badge minting immediately with 150 $TRIP pre-loaded—no browser extension or testnet gas required!
+- **📊 Eco-Insights Dashboard**: Weekly carbon trends, streak tracking, personalized commuting patterns, and predictive analytics.
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **React.js 19**: Component-based Single Page Application.
+- **Route-Level Code Splitting**: `React.lazy()` and `<Suspense>` architecture reducing initial bundle size by **67.5%**.
+- **Framer Motion**: Fluid micro-animations with hardware-accelerated GPU transforms (`willChange: "transform"`).
+- **Mapbox GL JS**: Vector map tiles with sub-millisecond route rendering.
+- **Ethers.js v6**: Complete Web3 provider, contract abstraction, and EIP-712 signature verification.
+
+### Backend & Database
+- **Node.js & Express.js**: High-throughput REST API with asynchronous I/O and strict Helmet security headers.
+- **Prisma ORM & PostgreSQL (NeonDB / Supabase)**: Type-safe database queries with serverless connection pooling.
+- **Redis (ioredis)**: Sub-millisecond caching for dashboard KPIs, leaderboard stats, and automatic cache invalidation on trip creation.
+- **SIWE & JWT Authentication**: Cryptographic Ethereum challenge-response authentication.
+
+### Smart Contracts & Blockchain
+- **Solidity 0.8.20** & **OpenZeppelin Contracts**:
+  - `TripToken.sol`: ERC-20 token with EIP-712 gasless voucher claiming.
+  - `TripBadgeNFT.sol`: ERC-721 collectible achievement NFT with token URI metadata.
+  - `CarbonOffsetRegistry.sol`: Verifiable carbon certificate burning registry.
+- **Hardhat**: Local EVM development node (`http://127.0.0.1:8545`, Chain ID `31337`) and automated test suites.
+
+---
+
+## ⛓️ Web3 & Smart Contracts
+
+| Contract | Standard | Description | Localhost Address (31337) |
+| :--- | :--- | :--- | :--- |
+| **TripToken** | ERC-20 | Eco-reward utility token | `0x5FbDB2315678afecb367f032d93F642f64180aa3` |
+| **TripBadgeNFT** | ERC-721 | Achievement badge NFTs | `0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512` |
+| **CarbonOffsetRegistry** | Custom | Carbon burning & verification | `0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0` |
+
+### Web3 Security & Network Protection
+- **Chain ID Validation**: The frontend automatically verifies the connected network and blocks accidental transactions to Ethereum Mainnet (protecting user funds).
+- **EIP-712 Off-Chain Vouchers**: Users do not need pre-funded contract allowances; the Tripchain Oracle signs cryptographically secure vouchers verified on-chain.
+- **Auto-Faucet**: When running locally, the backend automatically seeds connected MetaMask test wallets with 50-100 local test ETH for gas.
+
+---
+
+## ⚡ Performance Optimizations
+
+1. **Bundle Weight Slashed by 67.5%**: Initial JavaScript bundle dropped from **716 kB down to 232 kB gzipped** via dynamic imports. Mapbox GL (~450 kB) is loaded strictly on demand when visiting the Route Planner.
+2. **GPU Hardware Acceleration**: Background animations in `FloatingElements.jsx` utilize `willChange: "transform"` and device-aware density (3 elements on mobile, 6 on desktop), reducing CPU load by >75%.
+3. **Aggressive Static Caching**: `vercel.json` configures 1-year immutable caching (`public, max-age=31536000, immutable`) for production assets.
+4. **Dynamic CORS Support**: Backend automatically allows all `*.vercel.app` preview deployments and custom frontend domains.
+
+---
+
+## 🚀 Quick Start (Local Development)
 
 ### 1. Prerequisites
-Before you begin, ensure you have the following installed on your machine:
+- [Node.js](https://nodejs.org/) (v18 or later)
 - [Git](https://git-scm.com/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Docker Desktop](https://www.docker.com/) (Optional, for containerized run)
+- [MetaMask Extension](https://metamask.io/) (Optional, Demo Sandbox works without it)
 
-### 2. Clone the Repository
+### 2. Clone & Install
 ```bash
 git clone https://github.com/Aryan3572/TripChain-web.git
 cd TripChain-web
+
+# Install backend dependencies
+cd backend && npm install && npx prisma generate && cd ..
+
+# Install frontend dependencies
+cd frontend && npm install && cd ..
+
+# Install contracts dependencies
+cd contracts && npm install && cd ..
 ```
 
-### 3. Setup Environment Variables (Critical Step)
-For security reasons, `.env` files containing API keys and database credentials are intentionally excluded from version control. You must create these files locally before the application will run.
+### 3. Configure Environment Variables
 
-**Create the Frontend Environment File:**
-1. Create a file named `.env` inside the `frontend/` directory.
-2. Add your Mapbox token:
+**Backend (`backend/.env`):**
 ```env
-REACT_APP_MAPBOX_TOKEN=your_mapbox_token_here
-REACT_APP_GOOGLE_CLIENT_ID=your_google_web_client_id
-```
-*(Reach out to the repository owner to get the secure Mapbox token if you don't have one).*
-
-**Create the Backend Environment File:**
-1. Create a file named `.env` inside the `backend/` directory.
-2. Add the database and server configuration:
-```env
-DATABASE_URL="postgresql://neondb_owner:[PASSWORD]@ep-autumn-violet-axsuxlkn-pooler.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require&pgbouncer=true&connect_timeout=15"
-DIRECT_URL="postgresql://neondb_owner:[PASSWORD]@ep-autumn-violet-axsuxlkn.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require"
 PORT=5000
-JWT_SECRET=replace_with_a_long_random_secret
-GOOGLE_CLIENT_ID=your_google_web_client_id
+DATABASE_URL="postgresql://user:password@host/neondb?sslmode=require"
+DIRECT_URL="postgresql://user:password@host/neondb?sslmode=require"
+JWT_SECRET=your_super_secret_jwt_key_here
+FRONTEND_URL=http://localhost:3000
 
-# Login Security Alert Notifications
-ADMIN_NOTIFICATION_EMAIL=beingaryan5555@gmail.com
-GMAIL_USER=your_gmail@gmail.com
-GMAIL_APP_PASSWORD=your_16_digit_app_password
-
-# Redis Distributed Caching (Optional — automatically falls back to in-memory cache if omitted)
-REDIS_URL=rediss://default:your_password@your_endpoint.upstash.io:6379
+# Web3 Localhost Configuration
+CHAIN_ID=31337
+WEB3_RPC_URL=http://127.0.0.1:8545
+WEB3_VALIDATOR_PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 ```
-*(Reach out to the repository owner to get the actual database passwords).*
 
----
+**Frontend (`frontend/.env`):**
+```env
+REACT_APP_API_BASE=http://localhost:5000
+REACT_APP_CHAIN_ID=31337
+REACT_APP_MAPBOX_TOKEN=your_mapbox_token_here
+```
 
-## ⚡ Caching, Edge Gateway & Setup Guides
-
-For detailed instructions on configuring performance and edge infrastructure, consult the setup guides in the `docs/` folder:
-
-- 📖 [**Redis Caching Setup Guide**](docs/REDIS_SETUP.md): Step-by-step instructions on setting up free serverless Redis with Upstash, caching dashboard aggregations, and automatic invalidation.
-- 🌐 [**Cloudflare Partial Integration Guide**](docs/CLOUDFLARE_SETUP.md): Instructions on enabling Cloudflare's free CDN proxy (Orange Cloud) for SSL/DDoS protection and deploying the Edge Gateway Worker (`cloudflare-worker/`).
-
-### Google Sign-In setup
-
-TripChain uses Google Identity Services with an OpenID Connect ID token. In Google
-Cloud Console, configure the OAuth consent screen, create an OAuth 2.0 **Web
-application** client, and add these authorized JavaScript origins:
-
-- `http://localhost:3000` for `npm start`
-- `http://localhost:8080` for Docker Compose
-- `https://tripchain-dusky.vercel.app` for the current deployed frontend
-
-Copy the same Web client ID to `frontend/.env` as `REACT_APP_GOOGLE_CLIENT_ID`
-and to `backend/.env` as `GOOGLE_CLIENT_ID`. No Google client secret is used by
-this ID-token flow. It does not require an authorized redirect URI because the
-credential is returned to the browser callback and verified by the backend.
-
----
-
-## 🐳 Running with Docker Compose (Recommended for Local Dev)
-
-The easiest way to spin up the entire stack locally is by using Docker Compose. This automatically builds the images, provisions a local Redis caching container, links the frontend and backend with health checks, and exposes the correct ports.
-
-1. Ensure Docker Desktop is running.
-2. Open a terminal in the root directory of the project.
-3. Run the following command:
+### 4. Start Hardhat Node & Deploy Contracts
+In a dedicated terminal:
 ```bash
-docker-compose up --build -d
+cd contracts
+npx hardhat node
+```
+In another terminal, deploy the contracts:
+```bash
+cd contracts
+npx hardhat run scripts/deploy.js --network localhost
 ```
 
-For Docker Compose, CRA variables must be available during image build. Put `REACT_APP_API_BASE`, `REACT_APP_GOOGLE_CLIENT_ID`, and `REACT_APP_MAPBOX_TOKEN` in the repository-root `.env` (copy from `.env.example`), or invoke Compose with `--env-file frontend/.env`.
-*(The `-d` flag runs the containers in the background).*
+### 5. Run Backend & Frontend
+```bash
+# Terminal 1: Backend API
+cd backend
+npm run dev
 
-**Services & Ports:**
-- **Frontend**: `http://localhost:8080`
-- **Backend API & Health**: `http://localhost:5000` (Health check at `/health`)
-- **Redis Cache**: `localhost:6379` (Internal service `redis:6379`)
+# Terminal 2: React Frontend
+cd frontend
+npm start
+```
+Open **[http://localhost:3000](http://localhost:3000)** in your browser!
 
-To stop the containers when you are done working:
+---
+
+## 🐳 Running with Docker Compose
+
+Run the entire ecosystem (Hardhat EVM node, PostgreSQL Redis cache, Express backend, and React frontend) with a single command:
+
+```bash
+docker-compose up --build
+```
+
+**Service Endpoints:**
+- **Frontend**: `http://localhost:8080` (or `http://localhost:3000`)
+- **Backend API**: `http://localhost:5000` (Health check at `/health`)
+- **Hardhat EVM Node**: `http://localhost:8545`
+- **Redis Cache**: `localhost:6379`
+
+To stop all containers:
 ```bash
 docker-compose down
 ```
 
 ---
 
-## ☸️ Running with Kubernetes
+## 🌐 Production Deployment (Vercel & Render)
 
-If you want to test the Kubernetes deployment configuration, you can use the manifests provided in the `kubernetes/` folder.
+For complete step-by-step instructions, see the dedicated [**DEPLOYMENT.md**](DEPLOYMENT.md) guide.
 
-1. Enable Kubernetes inside your Docker Desktop settings.
-2. Open a terminal in the project root and apply the configurations:
-```bash
-kubectl apply -f kubernetes/secret.yaml
-kubectl apply -f kubernetes/backend-deployment.yaml
-kubectl apply -f kubernetes/backend-service.yaml
-kubectl apply -f kubernetes/frontend-deployment.yaml
-kubectl apply -f kubernetes/frontend-service.yaml
+### Summary:
+1. **Backend (Render)**:
+   - Connect Git repository on [Render](https://dashboard.render.com/).
+   - Root Directory: `backend`
+   - Build Command: `npm install && npx prisma generate`
+   - Start Command: `npm start`
+   - Set environment variables (`DATABASE_URL`, `JWT_SECRET`, `CHAIN_ID`, `FRONTEND_URL`).
+2. **Frontend (Vercel)**:
+   - Connect Git repository on [Vercel](https://vercel.com/).
+   - Root Directory: `frontend`
+   - Framework Preset: `Create React App`
+   - Set environment variable: `REACT_APP_API_BASE=https://<your-render-url>.onrender.com`.
+   - `frontend/vercel.json` automatically handles SPA routing and asset caching.
+
+---
+
+## 📁 Repository Structure
+
+```text
+Tripchain--main/
+├── backend/                  # Express REST API & Prisma ORM
+│   ├── prisma/               # Schema definitions and seed scripts
+│   ├── src/
+│   │   ├── controllers/      # Web3, Auth, Trips, Analytics controllers
+│   │   ├── middleware/       # Rate limiting, SIWE verification, auth
+│   │   ├── routes/           # REST endpoint definitions
+│   │   └── services/         # Ethers.js oracle vouchers, auto-faucet
+│   └── Dockerfile
+├── frontend/                 # React 19 Client SPA
+│   ├── public/               # Static icons, manifest, and assets
+│   ├── src/
+│   │   ├── assets/           # Bundled 3D mascot and optimized media
+│   │   ├── components/       # Reusable UI, Web3 modals, banners
+│   │   ├── context/          # Web3Context (Ethers, SIWE, Demo state)
+│   │   ├── pages/            # Code-split views (Planner, Rewards, Track)
+│   │   └── styles/           # Neo-brutalist theme & animation tokens
+│   ├── vercel.json           # Vercel SPA routing and cache rules
+│   └── Dockerfile
+├── contracts/                # Hardhat Solidity Smart Contracts
+│   ├── contracts/            # TripToken, TripBadgeNFT, CarbonOffsetRegistry
+│   ├── scripts/              # Automated deployment scripts
+│   ├── test/                 # Hardhat EVM unit & integration tests
+│   └── Dockerfile            # Alpine Hardhat node container
+├── kubernetes/               # Production Kubernetes manifests (K8s)
+├── docs/                     # Architecture, Redis, Cloudflare, Web3 guides
+├── DEPLOYMENT.md             # End-to-end Vercel & Render guide
+├── DOCKET.md                 # Complete changelog & engineering docket
+├── docker-compose.yml        # Multi-container orchestration
+└── render.yaml               # Render Infrastructure Blueprint
 ```
 
-To view the status of your pods and services:
-```bash
-kubectl get pods
-kubectl get services
-```
+---
 
-To tear down the Kubernetes environment:
-```bash
-kubectl delete -f kubernetes/
-```
+## 📚 Documentation Index
+
+- 📖 [**Deployment Guide (Vercel & Render)**](DEPLOYMENT.md): Detailed walkthrough for cloud hosting.
+- 🦊 [**Web3 & Smart Contracts Guide**](docs/WEB3_GUIDE.md): Blockchain architecture, tokenomics, vouchers, and faucet setup.
+- ⚡ [**Redis Caching Setup**](docs/REDIS_SETUP.md): Distributed caching configuration with Upstash or local Redis.
+- 🌐 [**Cloudflare Setup Guide**](docs/CLOUDFLARE_SETUP.md): Edge worker proxy and DDoS mitigation.
+- 📜 [**Engineering Docket**](DOCKET.md): Complete chronological record of features, fixes, and architecture choices.
+
+---
+
+## 📄 License
+This project is licensed under the [MIT License](LICENSE).
