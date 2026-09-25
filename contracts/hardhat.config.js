@@ -23,7 +23,7 @@ module.exports = {
     },
     // Polygon Amoy Testnet
     amoy: {
-      url: process.env.POLYGON_AMOY_RPC_URL || "https://rpc-amoy.polygon.technology",
+      url: process.env.POLYGON_AMOY_RPC_URL || "https://polygon-amoy.drpc.org",
       chainId: 80002,
       accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
     },
@@ -35,7 +35,7 @@ module.exports = {
     },
     // Ethereum Sepolia Testnet
     sepolia: {
-      url: process.env.SEPOLIA_RPC_URL || "https://rpc.sepolia.org",
+      url: process.env.SEPOLIA_RPC_URL || "https://ethereum-sepolia-rpc.publicnode.com",
       chainId: 11155111,
       accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
     },
