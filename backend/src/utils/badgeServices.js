@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "../config/prisma.js";
 
 export async function checkAndAwardBadges(userId) {
   const [stats, trips] = await Promise.all([
