@@ -122,55 +122,71 @@ Copy your database connection URL (e.g. `postgresql://user:password@host/dbname?
 
 ## 🖥️ Part 3: Deploy Backend to Render
 
-### Step 3.1: Create Web Service on Render
+You can deploy to Render using either the **Automated Blueprint (`render.yaml`)** or **Manual Web Service Creation**.
+
+### Option A: Deploy via Blueprint (Recommended - 1-Click Setup)
+1. Go to [dashboard.render.com](https://dashboard.render.com/) and click **New +** → **Blueprint**.
+2. Connect your `Tripchain` repository.
+3. Render reads `render.yaml` automatically and configures all build/start commands.
+4. Fill in the prompted secrets (`DATABASE_URL`, `DIRECT_URL`, `WEB3_VALIDATOR_PRIVATE_KEY`, etc.) and click **Apply**.
+
+---
+
+### Option B: Deploy Manually as a Web Service
+
+#### Step 3.1: Create Web Service on Render
 1. Go to [dashboard.render.com](https://dashboard.render.com/) and sign in.
 2. Click **New +** → **Web Service**.
 3. Select **Build and deploy from a Git repository** and pick your `Tripchain` repo.
 
-### Step 3.2: Configure Web Service Settings
+#### Step 3.2: Configure Web Service Settings
 | Field | Value | Notes |
 | :--- | :--- | :--- |
 | **Name** | `tripchain-backend` | Or any unique service name |
 | **Region** | Oregon (US West) or Frankfurt | Pick region closest to your database |
-| **Branch** | `main` | |
-| **Root Directory** | `backend` | **Crucial**: specify `backend` directory |
+| **Branch** | `main` | Production branch |
+| **Root Directory** | `backend` | **CRUCIAL**: Set to `backend` (do not leave empty!) |
 | **Runtime** | `Node` | |
-| **Build Command** | `npm install && npx prisma generate` | Installs deps and builds Prisma client |
-| **Start Command** | `npm start` | Runs `node src/index.js` |
+| **Build Command** | `npm install && npx prisma generate` | Installs dependencies and generates Prisma client |
+| **Start Command** | `npm run render:start` | **Automates migrations & badge seeding** before starting the API |
 | **Instance Type** | Free | |
 
-### Step 3.3: Set Backend Environment Variables
+> 💡 **Why `npm run render:start`?** On Render's Free tier, the interactive **Shell tab is disabled**. Setting the start command to `npm run render:start` automatically runs `prisma migrate deploy` and seeds default badges on boot without requiring manual shell access.
+
+#### Step 3.3: Set Backend Environment Variables
 In the **Environment Variables** section on Render, add:
 
 | Key | Example Value | Description |
 | :--- | :--- | :--- |
 | `NODE_ENV` | `production` | Production mode |
-| `PORT` | `5000` | Port for Express (Render also injects `PORT`) |
-| `DATABASE_URL` | `postgresql://user:pass@host/db?sslmode=require` | Your PostgreSQL connection string |
-| `DIRECT_URL` | *(Same as DATABASE_URL, or direct pooler URL)* | Required if using Supabase/Neon connection poolers |
-| `JWT_SECRET` | *Click "Generate"* or random 64-char string | Used to sign user JWTs |
-| `CHAIN_ID` | `80002` *(Amoy)* or `84532` *(Base)* or `11155111` *(Sepolia)* | The blockchain network ID where you deployed |
-| `WEB3_RPC_URL` | `https://rpc-amoy.polygon.technology` | Public RPC or Alchemy/Infura endpoint |
-| `WEB3_VALIDATOR_PRIVATE_KEY` | *(Deployer / Validator private key)* | Used by backend to sign EIP-712 reward & badge vouchers |
-| `FRONTEND_URL` | `https://placeholder.vercel.app` | Will update in Part 5 after Vercel deployment |
+| `PORT` | `5000` | Port for Express (Render routes traffic automatically) |
+| `DATABASE_URL` | `postgresql://user:pass@host/db?sslmode=require` | PostgreSQL connection string |
+| `DIRECT_URL` | *(Same as DATABASE_URL, or direct pooler URL)* | Required by Prisma. If using Render Postgres, use same URL. |
+| `JWT_SECRET` | *Click "Generate"* or random 64-char string | Used to sign user JWTs (**Required** in production) |
+| `CHAIN_ID` | `11155111` *(Sepolia)* or `80002` *(Amoy)* | The blockchain network ID where contracts are deployed |
+| `WEB3_RPC_URL` | `https://rpc.sepolia.org` | Public RPC or Alchemy/Infura endpoint |
+| `WEB3_VALIDATOR_PRIVATE_KEY` | *(Deployer / Validator private key)* | **Required**: Private key that signs reward and badge vouchers |
+| `FRONTEND_URL` | `https://placeholder.vercel.app` | Comma-separated allowed frontend domains (update after Vercel deploy) |
 
 *(Optional Variables)*:
-- `REDIS_URL`: If using an external Redis (e.g., Upstash). If left blank, backend uses built-in in-memory caching automatically.
+- `ADMIN_NOTIFICATION_EMAIL`: Admin email for login alert notifications.
+- `GMAIL_USER`: Gmail address for sending email alerts via Nodemailer.
+- `GMAIL_APP_PASSWORD`: 16-character Google App Password for Gmail SMTP.
+- `REDIS_URL`: If using an external Redis (e.g. Upstash). If left blank, backend uses fast in-memory caching.
 - `GOOGLE_CLIENT_ID`: Your Google OAuth web client ID if using Google Sign-In.
 
-### Step 3.4: Run Database Migrations & Seed Badges
-After the service finishes its first build:
-1. Open the **Shell** tab in the Render dashboard.
-2. Run:
-   ```bash
-   npx prisma migrate deploy
-   node prisma/seedBadges.js
-   ```
-3. Test your backend health check by visiting in your browser:
+#### Step 3.4: Verify Backend Health
+Once the deployment finishes (status shows **Live**):
+1. Visit your backend health check in your browser:
    `https://tripchain-backend.onrender.com/health`
-   You should see:
+2. You will receive:
    ```json
    { "status": "ok", "uptime": 12.3 }
+   ```
+3. Test the root endpoint:
+   `https://tripchain-backend.onrender.com/`
+   ```json
+   { "message": "🚀 Tripchain API is live!" }
    ```
 
 ---

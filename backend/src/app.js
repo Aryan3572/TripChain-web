@@ -36,7 +36,10 @@ const allowedOrigins = [
 ];
 
 if (process.env.FRONTEND_URL) {
-  allowedOrigins.push(process.env.FRONTEND_URL.replace(/\/$/, ""));
+  const customOrigins = process.env.FRONTEND_URL.split(",")
+    .map((origin) => origin.trim().replace(/\/$/, ""))
+    .filter(Boolean);
+  allowedOrigins.push(...customOrigins);
 }
 
 app.use(cors({
@@ -45,7 +48,7 @@ app.use(cors({
     if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
       return callback(null, true);
     }
-    return callback(new Error(`CORS policy blocked access from ${origin}`));
+    return callback(null, false);
   },
   credentials: true,
 }));
