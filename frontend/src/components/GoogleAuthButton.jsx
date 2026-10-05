@@ -50,11 +50,13 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
       // Ensure library is initialized once before rendering button
       initGoogleIdentityServices(clientId);
 
-      const containerWidth =
-        buttonRef.current?.parentElement?.clientWidth ||
-        buttonRef.current?.clientWidth ||
-        340;
-      const targetWidth = Math.min(380, Math.max(200, Math.floor(containerWidth)));
+      const getTargetWidth = () => {
+        const containerWidth =
+          buttonRef.current?.parentElement?.clientWidth ||
+          buttonRef.current?.clientWidth ||
+          400;
+        return Math.min(400, Math.max(220, Math.floor(containerWidth)));
+      };
 
       buttonRef.current.replaceChildren();
       window.google.accounts.id.renderButton(buttonRef.current, {
@@ -62,7 +64,7 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
         size: "large",
         text: label === "Sign up with Google" ? "signup_with" : "continue_with",
         shape: "rectangular",
-        width: targetWidth,
+        width: getTargetWidth(),
       });
     };
 
@@ -74,8 +76,8 @@ const GoogleAuthButton = ({ onCredential, onError, disabled, label }) => {
           const containerWidth =
             buttonRef.current?.parentElement?.clientWidth ||
             buttonRef.current?.clientWidth ||
-            340;
-          const targetWidth = Math.min(380, Math.max(200, Math.floor(containerWidth)));
+            400;
+          const targetWidth = Math.min(400, Math.max(220, Math.floor(containerWidth)));
           buttonRef.current.replaceChildren();
           window.google.accounts.id.renderButton(buttonRef.current, {
             theme: "outline",

@@ -48,24 +48,19 @@
 
 .google-auth-button-wrap {
   width: 100%;
-  max-width: 100%;
   min-height: 44px;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  margin: 4px 0 8px 0;
   box-sizing: border-box;
 }
 
 .google-auth-button-wrap > div {
-  width: 100% !important;
-  max-width: 100% !important;
+  width: 100%;
   display: flex;
   justify-content: center;
-}
-
-.google-auth-button-wrap iframe {
-  max-width: 100% !important;
+  align-items: center;
 }
 
 .google-auth-button {
