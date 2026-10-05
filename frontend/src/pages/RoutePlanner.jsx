@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   MapPin, Navigation, Zap, Leaf, AlertCircle, 
-  Car, Bike, Footprints, Bus, Train, Users, CheckCircle2, Sparkles, Compass, Play
+  Car, Bike, Footprints, Bus, Train, Users, CheckCircle2, Sparkles, Compass
 } from "lucide-react";
 import mapboxgl from "mapbox-gl";
 import mbxDirections from "@mapbox/mapbox-sdk/services/directions";
