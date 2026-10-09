@@ -19,6 +19,14 @@ spec:
       labels:
         app: tripchain-backend
     spec:
+      initContainers:
+      - name: prisma-migrate
+        image: tripchain-backend:latest
+        imagePullPolicy: IfNotPresent
+        command: ["sh", "-c", "npx prisma migrate deploy && node prisma/seedBadges.js"]
+        envFrom:
+        - secretRef:
+            name: tripchain-secrets
       containers:
       - name: tripchain-backend
         image: tripchain-backend:latest
@@ -57,4 +65,3 @@ spec:
           periodSeconds: 15
           timeoutSeconds: 5
           failureThreshold: 3
-

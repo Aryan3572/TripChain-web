@@ -8,10 +8,12 @@ ARG REACT_APP_API_BASE
 ARG REACT_APP_GOOGLE_CLIENT_ID
 ARG REACT_APP_MAPBOX_TOKEN
 ARG REACT_APP_CHAIN_ID
+ARG REACT_APP_BLOCK_EXPLORER_URL
 ENV REACT_APP_API_BASE=$REACT_APP_API_BASE
 ENV REACT_APP_GOOGLE_CLIENT_ID=$REACT_APP_GOOGLE_CLIENT_ID
 ENV REACT_APP_MAPBOX_TOKEN=$REACT_APP_MAPBOX_TOKEN
 ENV REACT_APP_CHAIN_ID=$REACT_APP_CHAIN_ID
+ENV REACT_APP_BLOCK_EXPLORER_URL=$REACT_APP_BLOCK_EXPLORER_URL
 
 # Copy package files
 COPY package*.json ./
@@ -33,5 +35,9 @@ COPY --from=build /app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
+# Built-in container health check testing Nginx web server
+HEALTHCHECK --interval=15s --timeout=3s --retries=3 \
+  CMD wget -q --spider http://localhost/ || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]

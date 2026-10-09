@@ -115,4 +115,28 @@ This docket records all technical updates, bug fixes, architecture integrations,
 - **Render Blueprint**: Created `render.yaml` infrastructure specification with automated Prisma build generation and health checks.
 - **Deployment Documentation**: Created `DEPLOYMENT.md` containing end-to-end steps for Vercel, Render, and database provisioning.
 
+---
+
+## 7. Containerization, Kubernetes & Documentation Synchronization
+- **Hardhat Automated Container Deployment (`contracts/entrypoint.sh`)**: Added container boot script that launches the Hardhat node on `0.0.0.0:8545`, waits for the RPC to be healthy, and automatically runs `deploy.js --network localhost` so smart contracts are deployed instantly on startup without requiring manual steps.
+- **Docker Compose Parity (`docker-compose.yml`)**:
+  - Integrated JSON-RPC healthcheck for the `tripchain-hardhat` container.
+  - Chained backend dependency to wait for both `redis` and `hardhat` healthy states.
+  - Added resilient optional `.env` loading (`required: false`) preventing crashes on fresh git clones.
+  - Synchronized `FRONTEND_URL` and `REACT_APP_BLOCK_EXPLORER_URL` build variables across containers.
+- **Backend & Frontend Dockerfiles**:
+  - Added native `HEALTHCHECK` instructions to both `backend/Dockerfile` and `frontend/Dockerfile`.
+  - Added `prisma/generated` to `backend/.dockerignore` to prevent host OS binaries from colliding with Linux container engines.
+- **Cloud-Native Kubernetes Manifests (`kubernetes/`)**:
+  - Added `kubernetes/hardhat-deployment.yaml` and `kubernetes/hardhat-service.yaml` to resolve in-cluster `tripchain-hardhat-service:8545`.
+  - Added Prisma migration `initContainers` in `kubernetes/backend-deployment.yaml` ensuring automatic database schema updates on pod creation.
+  - Added `kubernetes/ingress.yaml` for unified cluster routing (`/api` and `/`).
+  - Added `FRONTEND_URL` to `kubernetes/secret.yaml` for complete CORS alignment.
+  - Created [`kubernetes/README.md`](kubernetes/README.md) with comprehensive operations, port-forwarding, and scaling commands.
+- **Documentation Overhaul (`README.md`)**:
+  - Synchronized Solidity version badge (`0.8.24`) and added badges for Docker, Kubernetes, Sepolia, and Redis.
+  - Added deployed Ethereum Sepolia Testnet contract addresses (`Chain ID: 11155111`) and verified explorer links alongside Localhost addresses.
+  - Documented Real-Time Live Trip Tracker (`/api/trips/live`), Redis caching architecture, and full REST API endpoint inventory.
+  - Added dedicated Kubernetes deployment guide with Kustomize commands.
+
 
